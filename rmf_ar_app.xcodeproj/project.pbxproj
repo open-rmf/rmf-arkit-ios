@@ -7,14 +7,23 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		3009E4442683082600A3D262 /* EdgeEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3009E4432683082600A3D262 /* EdgeEntity.swift */; };
+		3009E449268322C400A3D262 /* VertexEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3009E448268322C400A3D262 /* VertexEntity.swift */; };
+		3011B531267C393500D17FD9 /* NetworkManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3011B530267C393500D17FD9 /* NetworkManager.swift */; };
+		308BEB4026858A7500757DC1 /* robotUI.usdz in Resources */ = {isa = PBXBuildFile; fileRef = 308BEB3F26858A7500757DC1 /* robotUI.usdz */; };
+		308C0DF3267B217D0077C844 /* RobotState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 308C0DF2267B217D0077C844 /* RobotState.swift */; };
+		3094768A2680310D00164DA6 /* BuildingMapManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 309476892680310D00164DA6 /* BuildingMapManager.swift */; };
 		30AA7596267A1B3700D56B99 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30AA7595267A1B3700D56B99 /* AppDelegate.swift */; };
 		30AA7598267A1B3700D56B99 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30AA7597267A1B3700D56B99 /* ViewController.swift */; };
-		30AA759A267A1B3700D56B99 /* Experience.rcproject in Sources */ = {isa = PBXBuildFile; fileRef = 30AA7599267A1B3700D56B99 /* Experience.rcproject */; };
 		30AA759D267A1B3700D56B99 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 30AA759B267A1B3700D56B99 /* Main.storyboard */; };
 		30AA759F267A1B3700D56B99 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 30AA759E267A1B3700D56B99 /* Assets.xcassets */; };
 		30AA75A2267A1B3700D56B99 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 30AA75A0267A1B3700D56B99 /* LaunchScreen.storyboard */; };
 		30AA75AD267A1B3700D56B99 /* rmf_ar_appTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30AA75AC267A1B3700D56B99 /* rmf_ar_appTests.swift */; };
 		30AA75B8267A1B3700D56B99 /* rmf_ar_appUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30AA75B7267A1B3700D56B99 /* rmf_ar_appUITests.swift */; };
+		30B231F8267B5B6B00265D9A /* ARAssets.rcproject in Sources */ = {isa = PBXBuildFile; fileRef = 30B231F7267B5B6B00265D9A /* ARAssets.rcproject */; };
+		30C3E04826802CC2009ABCFD /* RobotStateManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30C3E04726802CC2009ABCFD /* RobotStateManager.swift */; };
+		30D39D3A267CA90A00C92D8D /* BuilldingMap.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30D39D39267CA90A00C92D8D /* BuilldingMap.swift */; };
+		30DE5EB52681FD9E001FDFFD /* RobotTagLocalizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30DE5EB42681FD9E001FDFFD /* RobotTagLocalizer.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -35,10 +44,15 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		3009E4432683082600A3D262 /* EdgeEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EdgeEntity.swift; sourceTree = "<group>"; };
+		3009E448268322C400A3D262 /* VertexEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VertexEntity.swift; sourceTree = "<group>"; };
+		3011B530267C393500D17FD9 /* NetworkManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkManager.swift; sourceTree = "<group>"; };
+		308BEB3F26858A7500757DC1 /* robotUI.usdz */ = {isa = PBXFileReference; lastKnownFileType = file.usdz; path = robotUI.usdz; sourceTree = "<group>"; };
+		308C0DF2267B217D0077C844 /* RobotState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RobotState.swift; sourceTree = "<group>"; };
+		309476892680310D00164DA6 /* BuildingMapManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BuildingMapManager.swift; sourceTree = "<group>"; };
 		30AA7592267A1B3700D56B99 /* rmf_ar_app.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = rmf_ar_app.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		30AA7595267A1B3700D56B99 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		30AA7597267A1B3700D56B99 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
-		30AA7599267A1B3700D56B99 /* Experience.rcproject */ = {isa = PBXFileReference; lastKnownFileType = file.rcproject; path = Experience.rcproject; sourceTree = "<group>"; };
 		30AA759C267A1B3700D56B99 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		30AA759E267A1B3700D56B99 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		30AA75A1267A1B3700D56B99 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
@@ -49,6 +63,10 @@
 		30AA75B3267A1B3700D56B99 /* rmf_ar_appUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = rmf_ar_appUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		30AA75B7267A1B3700D56B99 /* rmf_ar_appUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = rmf_ar_appUITests.swift; sourceTree = "<group>"; };
 		30AA75B9267A1B3700D56B99 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		30B231F7267B5B6B00265D9A /* ARAssets.rcproject */ = {isa = PBXFileReference; lastKnownFileType = file.rcproject; path = ARAssets.rcproject; sourceTree = "<group>"; };
+		30C3E04726802CC2009ABCFD /* RobotStateManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RobotStateManager.swift; sourceTree = "<group>"; };
+		30D39D39267CA90A00C92D8D /* BuilldingMap.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BuilldingMap.swift; sourceTree = "<group>"; };
+		30DE5EB42681FD9E001FDFFD /* RobotTagLocalizer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RobotTagLocalizer.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -76,6 +94,45 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		3009E44526830DD700A3D262 /* Custom RealityKit Entities */ = {
+			isa = PBXGroup;
+			children = (
+				3009E4432683082600A3D262 /* EdgeEntity.swift */,
+				3009E448268322C400A3D262 /* VertexEntity.swift */,
+			);
+			path = "Custom RealityKit Entities";
+			sourceTree = "<group>";
+		};
+		3011B52D267C380400D17FD9 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				308C0DF2267B217D0077C844 /* RobotState.swift */,
+				30D39D39267CA90A00C92D8D /* BuilldingMap.swift */,
+			);
+			path = Model;
+			sourceTree = "<group>";
+		};
+		3011B52E267C381D00D17FD9 /* Controller */ = {
+			isa = PBXGroup;
+			children = (
+				30AA7597267A1B3700D56B99 /* ViewController.swift */,
+				3011B530267C393500D17FD9 /* NetworkManager.swift */,
+				30C3E04726802CC2009ABCFD /* RobotStateManager.swift */,
+				309476892680310D00164DA6 /* BuildingMapManager.swift */,
+				30DE5EB42681FD9E001FDFFD /* RobotTagLocalizer.swift */,
+			);
+			path = Controller;
+			sourceTree = "<group>";
+		};
+		3011B52F267C384000D17FD9 /* View */ = {
+			isa = PBXGroup;
+			children = (
+				30AA759B267A1B3700D56B99 /* Main.storyboard */,
+				30AA75A0267A1B3700D56B99 /* LaunchScreen.storyboard */,
+			);
+			path = View;
+			sourceTree = "<group>";
+		};
 		30AA7589267A1B3700D56B99 = {
 			isa = PBXGroup;
 			children = (
@@ -99,12 +156,12 @@
 		30AA7594267A1B3700D56B99 /* rmf_ar_app */ = {
 			isa = PBXGroup;
 			children = (
+				3009E44526830DD700A3D262 /* Custom RealityKit Entities */,
+				3011B52D267C380400D17FD9 /* Model */,
+				3011B52F267C384000D17FD9 /* View */,
+				3011B52E267C381D00D17FD9 /* Controller */,
 				30AA7595267A1B3700D56B99 /* AppDelegate.swift */,
-				30AA7597267A1B3700D56B99 /* ViewController.swift */,
-				30AA7599267A1B3700D56B99 /* Experience.rcproject */,
-				30AA759B267A1B3700D56B99 /* Main.storyboard */,
-				30AA759E267A1B3700D56B99 /* Assets.xcassets */,
-				30AA75A0267A1B3700D56B99 /* LaunchScreen.storyboard */,
+				30B231F9267B7CA500265D9A /* Resources */,
 				30AA75A3267A1B3700D56B99 /* Info.plist */,
 			);
 			path = rmf_ar_app;
@@ -126,6 +183,16 @@
 				30AA75B9267A1B3700D56B99 /* Info.plist */,
 			);
 			path = rmf_ar_appUITests;
+			sourceTree = "<group>";
+		};
+		30B231F9267B7CA500265D9A /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				308BEB3F26858A7500757DC1 /* robotUI.usdz */,
+				30B231F7267B5B6B00265D9A /* ARAssets.rcproject */,
+				30AA759E267A1B3700D56B99 /* Assets.xcassets */,
+			);
+			path = Resources;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -231,6 +298,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				308BEB4026858A7500757DC1 /* robotUI.usdz in Resources */,
 				30AA75A2267A1B3700D56B99 /* LaunchScreen.storyboard in Resources */,
 				30AA759F267A1B3700D56B99 /* Assets.xcassets in Resources */,
 				30AA759D267A1B3700D56B99 /* Main.storyboard in Resources */,
@@ -258,9 +326,17 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				308C0DF3267B217D0077C844 /* RobotState.swift in Sources */,
+				30D39D3A267CA90A00C92D8D /* BuilldingMap.swift in Sources */,
+				3094768A2680310D00164DA6 /* BuildingMapManager.swift in Sources */,
 				30AA7598267A1B3700D56B99 /* ViewController.swift in Sources */,
+				3011B531267C393500D17FD9 /* NetworkManager.swift in Sources */,
+				30DE5EB52681FD9E001FDFFD /* RobotTagLocalizer.swift in Sources */,
+				30C3E04826802CC2009ABCFD /* RobotStateManager.swift in Sources */,
+				30B231F8267B5B6B00265D9A /* ARAssets.rcproject in Sources */,
+				3009E4442683082600A3D262 /* EdgeEntity.swift in Sources */,
+				3009E449268322C400A3D262 /* VertexEntity.swift in Sources */,
 				30AA7596267A1B3700D56B99 /* AppDelegate.swift in Sources */,
-				30AA759A267A1B3700D56B99 /* Experience.rcproject in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -439,6 +515,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 6KNZYYFMYK;
 				INFOPLIST_FILE = rmf_ar_app/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.3;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -458,6 +535,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 6KNZYYFMYK;
 				INFOPLIST_FILE = rmf_ar_app/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.3;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
