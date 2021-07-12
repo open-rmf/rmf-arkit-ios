@@ -15,12 +15,9 @@ class VertexEntity: Entity, HasModel {
     private let TEXT_Z_OFFSET: Float = 0.5
     var hasText = false
     
+    // Default constructor is required
     required init() {
         super.init()
-        
-        self.components[ModelComponent] = ModelComponent(mesh: .generatePlane(width: 2, depth: 0.1), materials: [SimpleMaterial(color: .black, isMetallic: false)])
-        
-        self.components[Transform] = Transform(pitch: .pi/2, yaw: 0, roll: 0)
     }
     
     required init(vertex: Vertex, index: Int) {

@@ -3,16 +3,25 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 50;
+	objectVersion = 52;
 	objects = {
 
 /* Begin PBXBuildFile section */
 		3009E4442683082600A3D262 /* EdgeEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3009E4432683082600A3D262 /* EdgeEntity.swift */; };
 		3009E449268322C400A3D262 /* VertexEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3009E448268322C400A3D262 /* VertexEntity.swift */; };
 		3011B531267C393500D17FD9 /* NetworkManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3011B530267C393500D17FD9 /* NetworkManager.swift */; };
+		306C448D2694478700386D11 /* TaskCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 306C448C2694478700386D11 /* TaskCell.swift */; };
+		306C448F2694489300386D11 /* TaskManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 306C448E2694489300386D11 /* TaskManager.swift */; };
+		306C449226944E4400386D11 /* Task.swift in Sources */ = {isa = PBXBuildFile; fileRef = 306C449126944E4400386D11 /* Task.swift */; };
+		30756AB22697E7F200024055 /* DashboardConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30756AB12697E7F200024055 /* DashboardConfig.swift */; };
+		307C32DD2696D6EB0007EF4C /* Eureka in Frameworks */ = {isa = PBXBuildFile; productRef = 307C32DC2696D6EB0007EF4C /* Eureka */; };
+		307C32DF2696D7220007EF4C /* TaskCreationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 307C32DE2696D7220007EF4C /* TaskCreationViewController.swift */; };
+		307C32E12696E5EC0007EF4C /* dashboard_config.json in Resources */ = {isa = PBXBuildFile; fileRef = 307C32E02696E5EC0007EF4C /* dashboard_config.json */; };
 		308BEB4026858A7500757DC1 /* robotUI.usdz in Resources */ = {isa = PBXBuildFile; fileRef = 308BEB3F26858A7500757DC1 /* robotUI.usdz */; };
+		308BEB822685D71C00757DC1 /* WallEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 308BEB812685D71C00757DC1 /* WallEntity.swift */; };
 		308C0DF3267B217D0077C844 /* RobotState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 308C0DF2267B217D0077C844 /* RobotState.swift */; };
 		3094768A2680310D00164DA6 /* BuildingMapManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 309476892680310D00164DA6 /* BuildingMapManager.swift */; };
+		30A476C22693102A00CC5E99 /* TaskViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30A476C12693102A00CC5E99 /* TaskViewController.swift */; };
 		30AA7596267A1B3700D56B99 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30AA7595267A1B3700D56B99 /* AppDelegate.swift */; };
 		30AA7598267A1B3700D56B99 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30AA7597267A1B3700D56B99 /* ViewController.swift */; };
 		30AA759D267A1B3700D56B99 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 30AA759B267A1B3700D56B99 /* Main.storyboard */; };
@@ -24,6 +33,7 @@
 		30C3E04826802CC2009ABCFD /* RobotStateManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30C3E04726802CC2009ABCFD /* RobotStateManager.swift */; };
 		30D39D3A267CA90A00C92D8D /* BuilldingMap.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30D39D39267CA90A00C92D8D /* BuilldingMap.swift */; };
 		30DE5EB52681FD9E001FDFFD /* RobotTagLocalizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30DE5EB42681FD9E001FDFFD /* RobotTagLocalizer.swift */; };
+		30ECD020269407B100E12C55 /* PresentationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30ECD01F269407B100E12C55 /* PresentationController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -47,9 +57,17 @@
 		3009E4432683082600A3D262 /* EdgeEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EdgeEntity.swift; sourceTree = "<group>"; };
 		3009E448268322C400A3D262 /* VertexEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VertexEntity.swift; sourceTree = "<group>"; };
 		3011B530267C393500D17FD9 /* NetworkManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkManager.swift; sourceTree = "<group>"; };
+		306C448C2694478700386D11 /* TaskCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskCell.swift; sourceTree = "<group>"; };
+		306C448E2694489300386D11 /* TaskManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskManager.swift; sourceTree = "<group>"; };
+		306C449126944E4400386D11 /* Task.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Task.swift; sourceTree = "<group>"; };
+		30756AB12697E7F200024055 /* DashboardConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DashboardConfig.swift; sourceTree = "<group>"; };
+		307C32DE2696D7220007EF4C /* TaskCreationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskCreationViewController.swift; sourceTree = "<group>"; };
+		307C32E02696E5EC0007EF4C /* dashboard_config.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = dashboard_config.json; sourceTree = "<group>"; };
 		308BEB3F26858A7500757DC1 /* robotUI.usdz */ = {isa = PBXFileReference; lastKnownFileType = file.usdz; path = robotUI.usdz; sourceTree = "<group>"; };
+		308BEB812685D71C00757DC1 /* WallEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WallEntity.swift; sourceTree = "<group>"; };
 		308C0DF2267B217D0077C844 /* RobotState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RobotState.swift; sourceTree = "<group>"; };
 		309476892680310D00164DA6 /* BuildingMapManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BuildingMapManager.swift; sourceTree = "<group>"; };
+		30A476C12693102A00CC5E99 /* TaskViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskViewController.swift; sourceTree = "<group>"; };
 		30AA7592267A1B3700D56B99 /* rmf_ar_app.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = rmf_ar_app.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		30AA7595267A1B3700D56B99 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		30AA7597267A1B3700D56B99 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -67,6 +85,7 @@
 		30C3E04726802CC2009ABCFD /* RobotStateManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RobotStateManager.swift; sourceTree = "<group>"; };
 		30D39D39267CA90A00C92D8D /* BuilldingMap.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BuilldingMap.swift; sourceTree = "<group>"; };
 		30DE5EB42681FD9E001FDFFD /* RobotTagLocalizer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RobotTagLocalizer.swift; sourceTree = "<group>"; };
+		30ECD01F269407B100E12C55 /* PresentationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PresentationController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -74,6 +93,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				307C32DD2696D6EB0007EF4C /* Eureka in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -99,6 +119,7 @@
 			children = (
 				3009E4432683082600A3D262 /* EdgeEntity.swift */,
 				3009E448268322C400A3D262 /* VertexEntity.swift */,
+				308BEB812685D71C00757DC1 /* WallEntity.swift */,
 			);
 			path = "Custom RealityKit Entities";
 			sourceTree = "<group>";
@@ -106,8 +127,12 @@
 		3011B52D267C380400D17FD9 /* Model */ = {
 			isa = PBXGroup;
 			children = (
-				308C0DF2267B217D0077C844 /* RobotState.swift */,
-				30D39D39267CA90A00C92D8D /* BuilldingMap.swift */,
+				306C449026944E0C00386D11 /* Data Models */,
+				3011B530267C393500D17FD9 /* NetworkManager.swift */,
+				30C3E04726802CC2009ABCFD /* RobotStateManager.swift */,
+				309476892680310D00164DA6 /* BuildingMapManager.swift */,
+				30DE5EB42681FD9E001FDFFD /* RobotTagLocalizer.swift */,
+				306C448E2694489300386D11 /* TaskManager.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -115,11 +140,10 @@
 		3011B52E267C381D00D17FD9 /* Controller */ = {
 			isa = PBXGroup;
 			children = (
+				30A476C12693102A00CC5E99 /* TaskViewController.swift */,
 				30AA7597267A1B3700D56B99 /* ViewController.swift */,
-				3011B530267C393500D17FD9 /* NetworkManager.swift */,
-				30C3E04726802CC2009ABCFD /* RobotStateManager.swift */,
-				309476892680310D00164DA6 /* BuildingMapManager.swift */,
-				30DE5EB42681FD9E001FDFFD /* RobotTagLocalizer.swift */,
+				30ECD01F269407B100E12C55 /* PresentationController.swift */,
+				307C32DE2696D7220007EF4C /* TaskCreationViewController.swift */,
 			);
 			path = Controller;
 			sourceTree = "<group>";
@@ -129,8 +153,20 @@
 			children = (
 				30AA759B267A1B3700D56B99 /* Main.storyboard */,
 				30AA75A0267A1B3700D56B99 /* LaunchScreen.storyboard */,
+				306C448C2694478700386D11 /* TaskCell.swift */,
 			);
 			path = View;
+			sourceTree = "<group>";
+		};
+		306C449026944E0C00386D11 /* Data Models */ = {
+			isa = PBXGroup;
+			children = (
+				308C0DF2267B217D0077C844 /* RobotState.swift */,
+				30D39D39267CA90A00C92D8D /* BuilldingMap.swift */,
+				306C449126944E4400386D11 /* Task.swift */,
+				30756AB12697E7F200024055 /* DashboardConfig.swift */,
+			);
+			path = "Data Models";
 			sourceTree = "<group>";
 		};
 		30AA7589267A1B3700D56B99 = {
@@ -191,6 +227,7 @@
 				308BEB3F26858A7500757DC1 /* robotUI.usdz */,
 				30B231F7267B5B6B00265D9A /* ARAssets.rcproject */,
 				30AA759E267A1B3700D56B99 /* Assets.xcassets */,
+				307C32E02696E5EC0007EF4C /* dashboard_config.json */,
 			);
 			path = Resources;
 			sourceTree = "<group>";
@@ -211,6 +248,9 @@
 			dependencies = (
 			);
 			name = rmf_ar_app;
+			packageProductDependencies = (
+				307C32DC2696D6EB0007EF4C /* Eureka */,
+			);
 			productName = rmf_ar_app;
 			productReference = 30AA7592267A1B3700D56B99 /* rmf_ar_app.app */;
 			productType = "com.apple.product-type.application";
@@ -282,6 +322,9 @@
 				Base,
 			);
 			mainGroup = 30AA7589267A1B3700D56B99;
+			packageReferences = (
+				307C32DB2696D6EB0007EF4C /* XCRemoteSwiftPackageReference "Eureka" */,
+			);
 			productRefGroup = 30AA7593267A1B3700D56B99 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -298,6 +341,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				307C32E12696E5EC0007EF4C /* dashboard_config.json in Resources */,
 				308BEB4026858A7500757DC1 /* robotUI.usdz in Resources */,
 				30AA75A2267A1B3700D56B99 /* LaunchScreen.storyboard in Resources */,
 				30AA759F267A1B3700D56B99 /* Assets.xcassets in Resources */,
@@ -326,16 +370,24 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				308BEB822685D71C00757DC1 /* WallEntity.swift in Sources */,
 				308C0DF3267B217D0077C844 /* RobotState.swift in Sources */,
 				30D39D3A267CA90A00C92D8D /* BuilldingMap.swift in Sources */,
+				30A476C22693102A00CC5E99 /* TaskViewController.swift in Sources */,
+				306C448D2694478700386D11 /* TaskCell.swift in Sources */,
 				3094768A2680310D00164DA6 /* BuildingMapManager.swift in Sources */,
+				30756AB22697E7F200024055 /* DashboardConfig.swift in Sources */,
 				30AA7598267A1B3700D56B99 /* ViewController.swift in Sources */,
 				3011B531267C393500D17FD9 /* NetworkManager.swift in Sources */,
 				30DE5EB52681FD9E001FDFFD /* RobotTagLocalizer.swift in Sources */,
 				30C3E04826802CC2009ABCFD /* RobotStateManager.swift in Sources */,
+				306C448F2694489300386D11 /* TaskManager.swift in Sources */,
+				30ECD020269407B100E12C55 /* PresentationController.swift in Sources */,
 				30B231F8267B5B6B00265D9A /* ARAssets.rcproject in Sources */,
 				3009E4442683082600A3D262 /* EdgeEntity.swift in Sources */,
+				307C32DF2696D7220007EF4C /* TaskCreationViewController.swift in Sources */,
 				3009E449268322C400A3D262 /* VertexEntity.swift in Sources */,
+				306C449226944E4400386D11 /* Task.swift in Sources */,
 				30AA7596267A1B3700D56B99 /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -515,7 +567,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 6KNZYYFMYK;
 				INFOPLIST_FILE = rmf_ar_app/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 14.3;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.5;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -535,7 +587,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 6KNZYYFMYK;
 				INFOPLIST_FILE = rmf_ar_app/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 14.3;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.5;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -671,6 +723,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		307C32DB2696D6EB0007EF4C /* XCRemoteSwiftPackageReference "Eureka" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/xmartlabs/Eureka.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 5.3.3;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		307C32DC2696D6EB0007EF4C /* Eureka */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 307C32DB2696D6EB0007EF4C /* XCRemoteSwiftPackageReference "Eureka" */;
+			productName = Eureka;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 30AA758A267A1B3700D56B99 /* Project object */;
 }

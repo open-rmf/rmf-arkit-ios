@@ -32,7 +32,7 @@ class BuildingMapManager {
     }
     
     func downloadBuildingMap() {
-        self.networkManager.getJSONfromURLasync(urlString: BUILDING_MAP_URL, modelType: BuildingMap.self) {
+        self.networkManager.downloadModelFromURLAsync(urlString: BUILDING_MAP_URL, modelType: BuildingMap.self) {
             model in
             
             self.buildingMap = model
@@ -50,49 +50,43 @@ class BuildingMapManager {
             return
         }
         
+        guard self.buildingMap != nil else {
+            print("ERROR: No building map available - no visualization possible")
+            return
+        }
+        guard let currentLevel = self.buildingMap?.levels.first(where: {$0.name == levelName}) else {
+            print("ERROR: No level with name \(levelName) found")
+            return
+        }
+        
+        
         // Create an anchor for the building map
         let buildingMapAnchor = AnchorEntity(world: [0,0,0])
         buildingMapAnchor.name = "buildingMap"
         
-        let navGraphEntities = createNavGraphEntities(levelName: levelName)
-        
-        for navGraphEntity in navGraphEntities {
-            buildingMapAnchor.addChild(navGraphEntity)
-        }
+        addNavGraphs(fromLevel: currentLevel, toEntity: buildingMapAnchor)
+        addWallGraph(fromLevel: currentLevel, toEntity: buildingMapAnchor)
         
         // Finally add the building map to the scene
         arView.scene.addAnchor(buildingMapAnchor)
     }
-    
-    func createNavGraphEntities(levelName: String) -> [Entity] {
-        guard self.buildingMap != nil else {
-            print("ERROR: No building map available - no visualization possible")
-            return []
-        }
-        guard let level = self.buildingMap?.levels.first(where: {$0.name == levelName}) else {
-            print("ERROR: No level with name \(levelName) found")
-            return []
-        }
-        
-        var navGraphEntities: [Entity] = []
+
+    func addNavGraphs(fromLevel level: Level, toEntity parentEntity: Entity){
         
         for navGraph in level.navGraphs {
             // Name the nav graph
             let navGraphEntity = Entity()
-            navGraphEntity.name = levelName + "NavGraph" + navGraph.name
+            navGraphEntity.name = level.name + "NavGraph" + navGraph.name
             
+            addNavVertices(fromNavGraph: navGraph, toEntity: navGraphEntity)
+            addNavEdges(fromNavGraph: navGraph, toEntity: navGraphEntity)
             
-            addVertices(navGraph: navGraph, parentEntity: navGraphEntity)
-            addEdges(navGraph: navGraph, parentEntity: navGraphEntity)
-            
-            navGraphEntities.append(navGraphEntity)
+            parentEntity.addChild(navGraphEntity)
         }
-        
-        return navGraphEntities
         
     }
     
-    func addVertices(navGraph: NavGraph, parentEntity: Entity) {
+    func addNavVertices(fromNavGraph navGraph: NavGraph, toEntity parentEntity: Entity) {
         var verticesWithText: [VertexEntity] = []
         
         for (idx, vertex) in navGraph.vertices.enumerated() {
@@ -113,23 +107,36 @@ class BuildingMapManager {
         }.store(in: &cancellables)
     }
     
-    func addEdges(navGraph: NavGraph, parentEntity: Entity) {
-               
+    func addNavEdges(fromNavGraph navGraph: NavGraph, toEntity parentEntity: Entity) {
+        
+        // TODO: Visualize directed/undirected edges
+        
         for edge in navGraph.edges {
             let v1 = navGraph.vertices[edge.v1Idx]
             let v2 = navGraph.vertices[edge.v2Idx]
+                       
+            let edge = EdgeEntity(vertex1: v1, vertex2: v2, color: .green)
             
-            let directionVec = simd_float2(Float(v2.x), Float(v2.y)) - simd_float2(Float(v1.x), Float(v1.y))
-            
-            let edgeLength = length(directionVec)
-            let midpoint = simd_float2(Float(v1.x), Float(v1.y)) + directionVec/2
-            let zAxisRotation = atan2(directionVec.y, directionVec.x)
-            let pathRotation = simd_quatf(angle: zAxisRotation, axis: [0,0,1])
-            
-            let pathEntity = EdgeEntity(color: .green, pathLength: edgeLength, pathWidth: 0.1)
-            pathEntity.setPose(position: [midpoint.x, midpoint.y, 0.5], rotation: pathRotation)
-            
-            parentEntity.addChild(pathEntity)
+            parentEntity.addChild(edge)
         }
+    }
+    
+    func addWallGraph(fromLevel level: Level, toEntity parentEntity: Entity) {
+        
+        return
+        
+        let wallGraphEntity = Entity()
+        wallGraphEntity.name = "wall_graph"
+        
+        for edge in level.wallGraph.edges {
+            let v1 = level.wallGraph.vertices[edge.v1Idx]
+            let v2 = level.wallGraph.vertices[edge.v2Idx]
+                       
+            let wall = WallEntity(vertex1: v1, vertex2: v2)
+            
+            wallGraphEntity.addChild(wall)
+        }
+        
+        parentEntity.addChild(wallGraphEntity)
     }
 }

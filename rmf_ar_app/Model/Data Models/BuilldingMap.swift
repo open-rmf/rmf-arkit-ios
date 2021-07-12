@@ -16,6 +16,7 @@ struct Level: Codable {
     let name: String
     let elevation: Double
     let navGraphs: [NavGraph]
+    let wallGraph: NavGraph
 }
 
 struct NavGraph: Codable {

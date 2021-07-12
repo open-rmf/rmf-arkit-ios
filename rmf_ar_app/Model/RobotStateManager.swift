@@ -20,20 +20,27 @@ class RobotStateManager {
     
     var robotUIAsset: Entity
     
-    var networkManager = NetworkManager()
+    let networkManager = NetworkManager()
+    
+    var downloadTimer: Timer!
     
     init(arView: ARView, networkManager: NetworkManager) {
         self.arView = arView
-        self.networkManager = networkManager
         
         self.robotUIAsset = try! Entity.load(named: "robotUI")
+        
+        self.downloadTimer = Timer(timeInterval: 1.0, target: self, selector: #selector(downloadAndUpdateRobotStates), userInfo: nil, repeats: true)
+        
+        // Add some tolerance to reduce computational load
+        self.downloadTimer.tolerance = 0.2
+        
+        RunLoop.current.add(self.downloadTimer, forMode: .common)
     }
     
     func handleARAnchor(anchor: ARAnchor) {
         // Only process if the anchor is an image anchor
         guard let imageAnchor = anchor as? ARImageAnchor else {return}
         
-        self.downloadAndUpdateRobotStates()
         self.manageImageAnchor(imageAnchor: imageAnchor)
     }
     
@@ -46,12 +53,6 @@ class RobotStateManager {
 
             // Create a copy of the UI for robots
             let uiEntity = self.robotUIAsset.clone(recursive: true)
-
-            // Update UI with latest robotState data
-            if let state = self.robotStates[tagName] {
-                self.updateTextInRobotUI(uiEntity: uiEntity, state: state)
-            }
-
             
             // TODO: Add an occlusion material so we dont see the panel from behind
             let sceneAnchor = AnchorEntity.init(anchor: imageAnchor)
@@ -63,8 +64,8 @@ class RobotStateManager {
         }
     }
     
-    func downloadAndUpdateRobotStates() {
-        self.networkManager.getJSONfromURLasync(urlString: ROBOT_STATES_URL, modelType: [RobotState].self) {
+    @objc func downloadAndUpdateRobotStates() {
+        self.networkManager.downloadModelFromURLAsync(urlString: ROBOT_STATES_URL, modelType: [RobotState].self) {
             model in
             
             for state in model {
@@ -116,6 +117,7 @@ class RobotStateManager {
         }
     }
     
-    
-    
+    deinit {
+        downloadTimer.invalidate()
+    }
 }
