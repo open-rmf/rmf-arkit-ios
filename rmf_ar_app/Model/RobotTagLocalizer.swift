@@ -59,11 +59,14 @@ class RobotTagLocalizer {
         finalTransform[3] = translation
         
         arView.session.setWorldOrigin(relativeTransform: finalTransform)
-        isLocalized = true
         
-        // Send a notification that the world origin was updated
-        let localizationData = ["levelName": robot.levelName]
-        NotificationCenter.default.post(name: Notification.Name("setWorldOrigin"), object: nil, userInfo: localizationData)
+        if !isLocalized {
+            // Send a notification that the world origin was updated
+            let localizationData = ["levelName": robot.levelName]
+            NotificationCenter.default.post(name: Notification.Name("setWorldOrigin"), object: nil, userInfo: localizationData)
+        }
+        
+        isLocalized = true
     }
     
     
