@@ -22,16 +22,16 @@
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             </arView>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Xg8-Td-eUW">
-                                <rect key="frame" x="334" y="25" width="60" height="50.333333333333329"/>
+                                <rect key="frame" x="344" y="25" width="50" height="40.333333333333329"/>
                                 <constraints>
-                                    <constraint firstAttribute="width" constant="60" id="A27-9G-9yl"/>
-                                    <constraint firstAttribute="height" constant="60" id="HJ2-ki-Abf"/>
+                                    <constraint firstAttribute="width" constant="50" id="A27-9G-9yl"/>
+                                    <constraint firstAttribute="height" constant="50" id="HJ2-ki-Abf"/>
                                 </constraints>
                                 <state key="normal" backgroundImage="line.horizontal.3" catalog="system">
                                     <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 </state>
                                 <connections>
-                                    <action selector="menuButtonTapped:" destination="BYZ-38-t0r" eventType="touchUpInside" id="OyG-f4-0F7"/>
+                                    <action selector="taskMenuButtonTapped:" destination="BYZ-38-t0r" eventType="touchUpInside" id="OyG-f4-0F7"/>
                                 </connections>
                             </button>
                         </subviews>
