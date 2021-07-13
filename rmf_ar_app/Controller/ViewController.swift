@@ -8,27 +8,29 @@
 import UIKit
 import ARKit
 import RealityKit
-import Combine
 
 class ViewController: UIViewController, ARSessionDelegate {
-    
-    var taskViewController: TaskViewController!
-    
+        
     @IBOutlet var arView: ARView!
-    
+
+    var networkManager: NetworkManager!
     var robotStateManager: RobotStateManager!
     var buildingMapManager: BuildingMapManager!
     var localizer: RobotTagLocalizer!
-    var networkManager = NetworkManager()
+    
+    var taskViewController: TaskViewController!
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         
-        self.taskViewController = self.storyboard?.instantiateViewController(identifier: "Task View Controller")
-        
+        // Setup all the managers and controllers
+        networkManager = NetworkManager()
         robotStateManager = RobotStateManager(arView: arView, networkManager: networkManager)
         buildingMapManager = BuildingMapManager(arView: arView, networkManager: networkManager)
         localizer = RobotTagLocalizer(arView: arView)
+        
+        taskViewController = self.storyboard?.instantiateViewController(identifier: "Task View Controller")
+        taskViewController.taskManager = TaskManager(networkManager: networkManager)
         
         // Assign delegate
         arView.session.delegate = self
@@ -62,9 +64,7 @@ class ViewController: UIViewController, ARSessionDelegate {
         }
     }
     
-    @IBAction func menuButtonTapped(_ sender: Any) {
-        
-        
+    @IBAction func taskMenuButtonTapped(_ sender: Any) {
         taskViewController.modalPresentationStyle = .custom
         taskViewController.transitioningDelegate = self
         self.present(taskViewController, animated: true, completion: nil)
