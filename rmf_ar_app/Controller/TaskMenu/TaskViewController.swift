@@ -21,8 +21,9 @@ class TaskViewController: UIViewController {
     private let sectionInsets = UIEdgeInsets(top: 40.0, left: 20.0, bottom: 75.0, right: 20.0)
     private let tasksInSingleFrame: CGFloat = 1
     
-    let taskManager = TaskManager()
     private var updateTimer: Timer!
+    
+    var taskManager: TaskManager!
         
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -91,7 +92,7 @@ class TaskViewController: UIViewController {
         present(taskCreationNavigationVC, animated: true, completion: nil)
     }
     
-    func startUpdateTimer() {
+    private func startUpdateTimer() {
         updateTimer = Timer(timeInterval: 1.0, target: self, selector: #selector(updateData), userInfo: nil, repeats: true)
         
         // Add some tolerance to the timer (+- 0.2 seconds) to reduce load
@@ -101,7 +102,7 @@ class TaskViewController: UIViewController {
         RunLoop.current.add(updateTimer, forMode: .common)
     }
     
-    func stopUpdateTimer() {
+    private func stopUpdateTimer() {
         updateTimer.invalidate()
     }
     
@@ -134,7 +135,7 @@ extension TaskViewController: UICollectionViewDataSource {
         handleCancelling(indexToCancel: indexPath.item)
     }
     
-    func handleCancelling(indexToCancel: Int) {
+    private func handleCancelling(indexToCancel: Int) {
         // Need to stop the timer to avoid possible race condition where indexPath no longer
         // refers to correct task inside taskList since latest data may have shifted the taskList ordering
         stopUpdateTimer()
@@ -195,7 +196,7 @@ extension TaskViewController: UICollectionViewDataSource {
         }
     }
     
-    func showCancelWaitingAlert() {
+    private func showCancelWaitingAlert() {
         let attemptCancelAlert = UIAlertController(title: "Attempting to Cancel Task...", message: "\n\n", preferredStyle: .alert)
 
         // Add a loading wheel and adjust layout correctly
