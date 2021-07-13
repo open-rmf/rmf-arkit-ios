@@ -65,7 +65,7 @@ class RobotStateManager {
     }
     
     @objc func downloadAndUpdateRobotStates() {
-        self.networkManager.downloadModelFromURLAsync(urlString: ROBOT_STATES_URL, modelType: [RobotState].self) {
+        self.networkManager.sendGetRequest(urlString: ROBOT_STATES_URL, responseBodyType: [RobotState].self) {
             model in
             
             for state in model {

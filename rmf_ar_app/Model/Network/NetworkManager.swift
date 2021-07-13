@@ -11,7 +11,7 @@ import RealityKit
 
 class NetworkManager {
     
-    func downloadModelFromURLAsync<T: Decodable>(urlString: String, modelType: T.Type, completionHandler: @escaping (T) -> Void) {
+    func sendGetRequest<T: Decodable>(urlString: String, responseBodyType: T.Type, completionHandler: @escaping (T) -> Void) {
         guard let url = URL(string: urlString) else {
             print("Invalid URL: \(urlString)")
             return
@@ -38,7 +38,7 @@ class NetworkManager {
                 
                 let decoder = JSONDecoder()
                 decoder.keyDecodingStrategy = .convertFromSnakeCase
-                let result = try decoder.decode(modelType, from: data)
+                let result = try decoder.decode(responseBodyType, from: data)
                 
                 completionHandler(result)
             } catch {
@@ -49,7 +49,7 @@ class NetworkManager {
         task.resume()
     }
     
-    func sendPOSTRequestAsync<T: Encodable, U: Decodable>(urlString: String, requestModel: T, responseModelType: U.Type, responseHandler: @escaping (U) -> Void) {
+    func sendPostRequest<T: Encodable, U: Decodable>(urlString: String, requestBody: T, responseBodyType: U.Type, responseHandler: @escaping (U) -> Void) {
         guard let url = URL(string: urlString) else {
             print("Invalid URL: \(urlString)")
             return
@@ -60,7 +60,7 @@ class NetworkManager {
         do {
             let jsonEncoder = JSONEncoder()
             jsonEncoder.keyEncodingStrategy = .convertToSnakeCase
-            requestBody = try jsonEncoder.encode(requestModel)
+            requestBody = try jsonEncoder.encode(requestBody)
         } catch {
             print(error)
         }
@@ -97,7 +97,7 @@ class NetworkManager {
                 
                 let decoder = JSONDecoder()
                 decoder.keyDecodingStrategy = .convertFromSnakeCase
-                let responseBody = try decoder.decode(responseModelType.self, from: data)
+                let responseBody = try decoder.decode(responseBodyType.self, from: data)
                 
                 responseHandler(responseBody)
             } catch {
