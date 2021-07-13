@@ -12,6 +12,7 @@ class NetworkManager {
     
     let logger = Logger(subsystem: Bundle.main.bundleIdentifier!, category: "network")
     
+    // MARK: - REST Methods
     func sendGetRequest<T: Decodable>(urlString: String, responseBodyType: T.Type, completionHandler: @escaping (T) -> Void) {
         guard let url = URL(string: urlString) else {
             logger.error("Invalid URL: \(urlString)")
@@ -64,32 +65,94 @@ class NetworkManager {
         task.resume()
         
     }
+
+    // MARK: - Web Socket Methods
+    func openWebSocketConnection(urlString: String) -> URLSessionWebSocketTask? {
+        guard let url = URL(string: urlString) else {
+            logger.error("Invalid URL: \(urlString)")
+            return nil
+        }
+        
+        let webSocketTask = URLSession.shared.webSocketTask(with: url)
+        webSocketTask.resume()
+        
+        return webSocketTask
+    }
     
-    func handleDataTaskResponse(data: Data?, response: URLResponse?, error: Error?) -> Data? {
+    func closeWebSocketConnection(webSocketConnection: URLSessionWebSocketTask) {
+        let reason = "Closing connection".data(using: .utf8)
+        webSocketConnection.cancel(with: .normalClosure, reason: reason)
+    }
+    
+    func sendWebSocketRequest<T: Encodable, U: Decodable>(webSocketConnection: URLSessionWebSocketTask, requestBody: T, responseBodyType: U.Type, completionHandler: @escaping (U) -> Void) {
+        
+        guard let requestData = self.encodeJSON(from: requestBody) else {
+            return
+        }
+        
+        let webSocketData = URLSessionWebSocketTask.Message.data(requestData)
+        
+        webSocketConnection.send(webSocketData) {
+            error in
+            
+            if let error = error {
+                self.logger.error("\(error.localizedDescription)")
+            }
+        }
+        
+        webSocketConnection.receive() {
+            result in
+            
+            switch result {
+            case .success(let response):
+                // Response can either be as data or as
+                switch response {
+                case .data(let data):
+                    if let responseBody = self.decodeJSON(from: data, to: responseBodyType) {
+                        completionHandler(responseBody)
+                    }
+
+                case .string(let text):
+                    if let responseBody = self.decodeJSON(from: text.data(using: .utf8)!, to: responseBodyType) {
+                        completionHandler(responseBody)
+                    }
+                @unknown default:
+                    // Should never happen unless URLSessionWebSocketTask.Message type is changed
+                    fatalError()
+                }
+                
+            case .failure(let error):
+                self.logger.error("\(error.localizedDescription)")
+            }
+        }
+    }
+    
+    // MARK: - Private Methods
+    private func handleDataTaskResponse(data: Data?, response: URLResponse?, error: Error?) -> Data? {
         if let error = error {
-            self.handleClientError(clientError: error)
+            handleClientError(clientError: error)
             return nil
         }
 
         guard let httpResponse = response as? HTTPURLResponse,
               (200...299).contains(httpResponse.statusCode) else {
-            self.handleServerError(serverResponse: response)
+            handleServerError(serverResponse: response)
             return nil
         }
         
         guard let data = data else {
-            self.logger.error("No data received")
+            logger.error("No data received")
             return nil
         }
         
         return data
     }
     
-    func handleClientError(clientError: Error) {
+    private func handleClientError(clientError: Error) {
         logger.error("Client Error - \(clientError.localizedDescription)")
     }
     
-    func handleServerError(serverResponse: URLResponse?) {
+    private func handleServerError(serverResponse: URLResponse?) {
         guard let httpResponse = serverResponse as? HTTPURLResponse else {
             logger.error("Server Error - Server Response not a HTTP response")
             return
@@ -98,7 +161,7 @@ class NetworkManager {
         logger.error("Server Error - Status Code: \(httpResponse.statusCode)")
     }
     
-    func decodeJSON<T: Decodable>(from data: Data, to decodeType: T.Type) -> T? {
+    private func decodeJSON<T: Decodable>(from data: Data, to decodeType: T.Type) -> T? {
         do {
             let decoder = JSONDecoder()
             decoder.keyDecodingStrategy = .convertFromSnakeCase
@@ -106,13 +169,13 @@ class NetworkManager {
             return try decoder.decode(decodeType, from: data)
             
         } catch {
-            self.logger.error("\(error.localizedDescription)")
+            logger.error("\(error.localizedDescription)")
         }
         
         return nil
     }
     
-    func encodeJSON<T: Encodable>(from encodedData: T) -> Data? {
+    private func encodeJSON<T: Encodable>(from encodedData: T) -> Data? {
         do {
             let jsonEncoder = JSONEncoder()
             jsonEncoder.keyEncodingStrategy = .convertToSnakeCase
