@@ -127,12 +127,11 @@
 		3011B52D267C380400D17FD9 /* Model */ = {
 			isa = PBXGroup;
 			children = (
-				306C449026944E0C00386D11 /* Data Models */,
-				3011B530267C393500D17FD9 /* NetworkManager.swift */,
-				30C3E04726802CC2009ABCFD /* RobotStateManager.swift */,
-				309476892680310D00164DA6 /* BuildingMapManager.swift */,
-				30DE5EB42681FD9E001FDFFD /* RobotTagLocalizer.swift */,
-				306C448E2694489300386D11 /* TaskManager.swift */,
+				309873CF269D401200E5DDA2 /* Task */,
+				309873CE269D3FD300E5DDA2 /* BuildingMap */,
+				309873CC269D3FC300E5DDA2 /* Localization */,
+				309873CB269D3FB900E5DDA2 /* Robot */,
+				309873CA269D3FAB00E5DDA2 /* Network */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -140,10 +139,8 @@
 		3011B52E267C381D00D17FD9 /* Controller */ = {
 			isa = PBXGroup;
 			children = (
-				30A476C12693102A00CC5E99 /* TaskViewController.swift */,
+				309873D0269D403500E5DDA2 /* TaskMenu */,
 				30AA7597267A1B3700D56B99 /* ViewController.swift */,
-				30ECD01F269407B100E12C55 /* PresentationController.swift */,
-				307C32DE2696D7220007EF4C /* TaskCreationViewController.swift */,
 			);
 			path = Controller;
 			sourceTree = "<group>";
@@ -158,15 +155,58 @@
 			path = View;
 			sourceTree = "<group>";
 		};
-		306C449026944E0C00386D11 /* Data Models */ = {
+		309873CA269D3FAB00E5DDA2 /* Network */ = {
+			isa = PBXGroup;
+			children = (
+				3011B530267C393500D17FD9 /* NetworkManager.swift */,
+			);
+			path = Network;
+			sourceTree = "<group>";
+		};
+		309873CB269D3FB900E5DDA2 /* Robot */ = {
 			isa = PBXGroup;
 			children = (
 				308C0DF2267B217D0077C844 /* RobotState.swift */,
+				30C3E04726802CC2009ABCFD /* RobotStateManager.swift */,
+			);
+			path = Robot;
+			sourceTree = "<group>";
+		};
+		309873CC269D3FC300E5DDA2 /* Localization */ = {
+			isa = PBXGroup;
+			children = (
+				30DE5EB42681FD9E001FDFFD /* RobotTagLocalizer.swift */,
+			);
+			path = Localization;
+			sourceTree = "<group>";
+		};
+		309873CE269D3FD300E5DDA2 /* BuildingMap */ = {
+			isa = PBXGroup;
+			children = (
+				309476892680310D00164DA6 /* BuildingMapManager.swift */,
 				30D39D39267CA90A00C92D8D /* BuilldingMap.swift */,
+			);
+			path = BuildingMap;
+			sourceTree = "<group>";
+		};
+		309873CF269D401200E5DDA2 /* Task */ = {
+			isa = PBXGroup;
+			children = (
+				306C448E2694489300386D11 /* TaskManager.swift */,
 				306C449126944E4400386D11 /* Task.swift */,
 				30756AB12697E7F200024055 /* DashboardConfig.swift */,
 			);
-			path = "Data Models";
+			path = Task;
+			sourceTree = "<group>";
+		};
+		309873D0269D403500E5DDA2 /* TaskMenu */ = {
+			isa = PBXGroup;
+			children = (
+				30A476C12693102A00CC5E99 /* TaskViewController.swift */,
+				30ECD01F269407B100E12C55 /* PresentationController.swift */,
+				307C32DE2696D7220007EF4C /* TaskCreationViewController.swift */,
+			);
+			path = TaskMenu;
 			sourceTree = "<group>";
 		};
 		30AA7589267A1B3700D56B99 = {
