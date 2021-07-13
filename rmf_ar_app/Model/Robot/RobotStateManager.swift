@@ -20,12 +20,14 @@ class RobotStateManager {
     
     var robotUIAsset: Entity
     
-    let networkManager = NetworkManager()
+    var networkManager: NetworkManager
     
     var downloadTimer: Timer!
     
     init(arView: ARView, networkManager: NetworkManager) {
         self.arView = arView
+        
+        self.networkManager = networkManager
         
         self.robotUIAsset = try! Entity.load(named: "robotUI")
         
