@@ -32,7 +32,7 @@ class BuildingMapManager {
     }
     
     func downloadBuildingMap() {
-        self.networkManager.downloadModelFromURLAsync(urlString: BUILDING_MAP_URL, modelType: BuildingMap.self) {
+        self.networkManager.sendGetRequest(urlString: BUILDING_MAP_URL, responseBodyType: BuildingMap.self) {
             model in
             
             self.buildingMap = model

@@ -22,7 +22,7 @@ class TaskManager {
     }
     
     @objc func downloadTaskList() {
-        self.networkManager.downloadModelFromURLAsync(urlString: TASK_LIST_URL, modelType: [TaskSummary].self) {
+        self.networkManager.sendGetRequest(urlString: TASK_LIST_URL, responseBodyType: [TaskSummary].self) {
             model in
             
             self.taskList = model
@@ -49,7 +49,7 @@ class TaskManager {
     }
     
     func sendTask<T: CreateTaskRequest>(request: T, completionHandler: @escaping (Bool, String, String) -> Void) {
-        networkManager.sendPOSTRequestAsync(urlString: SUBMIT_TASK_URL, requestModel: request, responseModelType: CreateTaskResponse.self) {
+        networkManager.sendPostRequest(urlString: SUBMIT_TASK_URL, requestBody: request, responseBodyType: CreateTaskResponse.self) {
             responseBody in
             
             if responseBody.errorMsg == "" {
@@ -63,7 +63,7 @@ class TaskManager {
     func cancelTask(taskId: String, completionHandler: @escaping (Bool) -> Void) {
         let cancelTaskRequest = CancelTaskRequest(taskId: taskId)
         
-        networkManager.sendPOSTRequestAsync(urlString: CANCEL_TASK_URL, requestModel: cancelTaskRequest, responseModelType: CancelTaskResponse.self) { responseBody in
+        networkManager.sendPostRequest(urlString: CANCEL_TASK_URL, requestBody: cancelTaskRequest, responseBodyType: CancelTaskResponse.self) { responseBody in
             completionHandler(responseBody.success)
         }
     }
