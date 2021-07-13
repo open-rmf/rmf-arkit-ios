@@ -9,20 +9,24 @@ import Foundation
 
 class TaskManager {
     
+    // MARK: - URL Constants
     let TASK_LIST_URL = "http://192.168.1.201:8080/task_list"
     let SUBMIT_TASK_URL = "http://192.168.1.201:8080/submit_task"
     let CANCEL_TASK_URL = "http://192.168.1.201:8080/cancel_task"
     
-    let networkManager = NetworkManager()
-    
+    // MARK: - Instance Variables
+    var networkManager: NetworkManager
     var taskList: [TaskSummary] = []
     
-    init() {
+    
+    // MARK: - Public Methods
+    init(networkManager: NetworkManager) {
+        self.networkManager = networkManager
         self.downloadTaskList()
     }
     
-    @objc func downloadTaskList() {
-        self.networkManager.sendGetRequest(urlString: TASK_LIST_URL, responseBodyType: [TaskSummary].self) {
+    func downloadTaskList() {
+        networkManager.sendGetRequest(urlString: TASK_LIST_URL, responseBodyType: [TaskSummary].self) {
             model in
             
             self.taskList = model
@@ -48,7 +52,16 @@ class TaskManager {
         
     }
     
-    func sendTask<T: CreateTaskRequest>(request: T, completionHandler: @escaping (Bool, String, String) -> Void) {
+    func cancelTask(taskId: String, completionHandler: @escaping (Bool) -> Void) {
+        let cancelTaskRequest = CancelTaskRequest(taskId: taskId)
+        
+        networkManager.sendPostRequest(urlString: CANCEL_TASK_URL, requestBody: cancelTaskRequest, responseBodyType: CancelTaskResponse.self) { responseBody in
+            completionHandler(responseBody.success)
+        }
+    }
+    
+    // MARK: - Private Methods
+    private func sendTask<T: CreateTaskRequest>(request: T, completionHandler: @escaping (Bool, String, String) -> Void) {
         networkManager.sendPostRequest(urlString: SUBMIT_TASK_URL, requestBody: request, responseBodyType: CreateTaskResponse.self) {
             responseBody in
             
@@ -59,14 +72,5 @@ class TaskManager {
             }
         }
     }
-    
-    func cancelTask(taskId: String, completionHandler: @escaping (Bool) -> Void) {
-        let cancelTaskRequest = CancelTaskRequest(taskId: taskId)
-        
-        networkManager.sendPostRequest(urlString: CANCEL_TASK_URL, requestBody: cancelTaskRequest, responseBodyType: CancelTaskResponse.self) { responseBody in
-            completionHandler(responseBody.success)
-        }
-    }
-    
     
 }
