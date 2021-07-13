@@ -17,6 +17,8 @@
 		307C32DD2696D6EB0007EF4C /* Eureka in Frameworks */ = {isa = PBXBuildFile; productRef = 307C32DC2696D6EB0007EF4C /* Eureka */; };
 		307C32DF2696D7220007EF4C /* TaskCreationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 307C32DE2696D7220007EF4C /* TaskCreationViewController.swift */; };
 		307C32E12696E5EC0007EF4C /* dashboard_config.json in Resources */ = {isa = PBXBuildFile; fileRef = 307C32E02696E5EC0007EF4C /* dashboard_config.json */; };
+		307ECE15269D5DE1001DC4AD /* Trajectory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 307ECE14269D5DE1001DC4AD /* Trajectory.swift */; };
+		307ECE17269DAA88001DC4AD /* TrajectoryManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 307ECE16269DAA88001DC4AD /* TrajectoryManager.swift */; };
 		308BEB4026858A7500757DC1 /* robotUI.usdz in Resources */ = {isa = PBXBuildFile; fileRef = 308BEB3F26858A7500757DC1 /* robotUI.usdz */; };
 		308BEB822685D71C00757DC1 /* WallEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 308BEB812685D71C00757DC1 /* WallEntity.swift */; };
 		308C0DF3267B217D0077C844 /* RobotState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 308C0DF2267B217D0077C844 /* RobotState.swift */; };
@@ -61,6 +63,8 @@
 		30756AB12697E7F200024055 /* DashboardConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DashboardConfig.swift; sourceTree = "<group>"; };
 		307C32DE2696D7220007EF4C /* TaskCreationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskCreationViewController.swift; sourceTree = "<group>"; };
 		307C32E02696E5EC0007EF4C /* dashboard_config.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = dashboard_config.json; sourceTree = "<group>"; };
+		307ECE14269D5DE1001DC4AD /* Trajectory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Trajectory.swift; sourceTree = "<group>"; };
+		307ECE16269DAA88001DC4AD /* TrajectoryManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrajectoryManager.swift; sourceTree = "<group>"; };
 		308BEB3F26858A7500757DC1 /* robotUI.usdz */ = {isa = PBXFileReference; lastKnownFileType = file.usdz; path = robotUI.usdz; sourceTree = "<group>"; };
 		308BEB812685D71C00757DC1 /* WallEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WallEntity.swift; sourceTree = "<group>"; };
 		308C0DF2267B217D0077C844 /* RobotState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RobotState.swift; sourceTree = "<group>"; };
@@ -162,6 +166,8 @@
 			children = (
 				308C0DF2267B217D0077C844 /* RobotState.swift */,
 				30C3E04726802CC2009ABCFD /* RobotStateManager.swift */,
+				307ECE14269D5DE1001DC4AD /* Trajectory.swift */,
+				307ECE16269DAA88001DC4AD /* TrajectoryManager.swift */,
 			);
 			path = Robot;
 			sourceTree = "<group>";
@@ -394,10 +400,12 @@
 				30AA7598267A1B3700D56B99 /* ViewController.swift in Sources */,
 				3011B531267C393500D17FD9 /* NetworkManager.swift in Sources */,
 				30DE5EB52681FD9E001FDFFD /* RobotTagLocalizer.swift in Sources */,
+				307ECE17269DAA88001DC4AD /* TrajectoryManager.swift in Sources */,
 				30C3E04826802CC2009ABCFD /* RobotStateManager.swift in Sources */,
 				306C448F2694489300386D11 /* TaskManager.swift in Sources */,
 				30ECD020269407B100E12C55 /* PresentationController.swift in Sources */,
 				30B231F8267B5B6B00265D9A /* ARAssets.rcproject in Sources */,
+				307ECE15269D5DE1001DC4AD /* Trajectory.swift in Sources */,
 				3009E4442683082600A3D262 /* EdgeEntity.swift in Sources */,
 				307C32DF2696D7220007EF4C /* TaskCreationViewController.swift in Sources */,
 				3009E449268322C400A3D262 /* VertexEntity.swift in Sources */,
