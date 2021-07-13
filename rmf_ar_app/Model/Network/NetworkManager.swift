@@ -6,102 +6,58 @@
 //
 
 import Foundation
-import ARKit
-import RealityKit
+import os
 
 class NetworkManager {
     
+    let logger = Logger(subsystem: Bundle.main.bundleIdentifier!, category: "network")
+    
     func sendGetRequest<T: Decodable>(urlString: String, responseBodyType: T.Type, completionHandler: @escaping (T) -> Void) {
         guard let url = URL(string: urlString) else {
-            print("Invalid URL: \(urlString)")
+            logger.error("Invalid URL: \(urlString)")
             return
         }
         
         let task = URLSession.shared.dataTask(with: url) { data, response, error in
-            if let error = error {
-                self.handleClientError(clientError: error)
+            guard let responseData = self.handleDataTaskResponse(data: data, response: response, error: error) else {
                 return
             }
             
-            guard let httpResponse = response as? HTTPURLResponse,
-                  (200...299).contains(httpResponse.statusCode) else {
-                self.handleServerError(serverResponse: response)
-                return
-            }
-            
-            do {
-                guard let data = data else {
-                    print("ERROR: No data received")
-                    return
-                }
-                
-                
-                let decoder = JSONDecoder()
-                decoder.keyDecodingStrategy = .convertFromSnakeCase
-                let result = try decoder.decode(responseBodyType, from: data)
-                
-                completionHandler(result)
-            } catch {
-                print(error)
+            // Run completionHandler only if successfully decoded
+            if let responseBody = self.decodeJSON(from: responseData, to: responseBodyType) {
+                completionHandler(responseBody)
             }
         }
         
         task.resume()
     }
     
-    func sendPostRequest<T: Encodable, U: Decodable>(urlString: String, requestBody: T, responseBodyType: U.Type, responseHandler: @escaping (U) -> Void) {
+    func sendPostRequest<T: Encodable, U: Decodable>(urlString: String, requestBody: T, responseBodyType: U.Type, completionHandler: @escaping (U) -> Void) {
+        
         guard let url = URL(string: urlString) else {
-            print("Invalid URL: \(urlString)")
+            logger.error("Invalid URL: \(urlString)")
             return
         }
         
-        var requestBody: Optional<Data> = nil
-        
-        do {
-            let jsonEncoder = JSONEncoder()
-            jsonEncoder.keyEncodingStrategy = .convertToSnakeCase
-            requestBody = try jsonEncoder.encode(requestBody)
-        } catch {
-            print(error)
-        }
-        
-        guard requestBody != nil else {
-            print("Failed to convert request model to Data")
+        guard let requestData = self.encodeJSON(from: requestBody) else {
             return
         }
         
         // Timeout after 1 minute
         var urlRequest = URLRequest(url: url, timeoutInterval: 60)
         urlRequest.httpMethod = "POST"
-        urlRequest.httpBody = requestBody
+        urlRequest.httpBody = requestData
         urlRequest.setValue("application/json; charset=utf-8", forHTTPHeaderField: "Content-Type")
         urlRequest.setValue("application/json; charset=utf-8", forHTTPHeaderField: "Accept")
         
         let task = URLSession.shared.dataTask(with: urlRequest) { data, response, error in
-            if let error = error {
-                self.handleClientError(clientError: error)
-                return
-            }
-
-            guard let httpResponse = response as? HTTPURLResponse,
-                  (200...299).contains(httpResponse.statusCode) else {
-                self.handleServerError(serverResponse: response)
+            guard let responseData = self.handleDataTaskResponse(data: data, response: response, error: error) else {
                 return
             }
             
-            do {
-                guard let data = data else {
-                    print("ERROR: No data received")
-                    return
-                }
-                
-                let decoder = JSONDecoder()
-                decoder.keyDecodingStrategy = .convertFromSnakeCase
-                let responseBody = try decoder.decode(responseBodyType.self, from: data)
-                
-                responseHandler(responseBody)
-            } catch {
-                print(error)
+            // Run completionHandler only if successfully decoded
+            if let responseBody = self.decodeJSON(from: responseData, to: responseBodyType) {
+                completionHandler(responseBody)
             }
         }
         
@@ -109,21 +65,63 @@ class NetworkManager {
         
     }
     
+    func handleDataTaskResponse(data: Data?, response: URLResponse?, error: Error?) -> Data? {
+        if let error = error {
+            self.handleClientError(clientError: error)
+            return nil
+        }
+
+        guard let httpResponse = response as? HTTPURLResponse,
+              (200...299).contains(httpResponse.statusCode) else {
+            self.handleServerError(serverResponse: response)
+            return nil
+        }
+        
+        guard let data = data else {
+            self.logger.error("No data received")
+            return nil
+        }
+        
+        return data
+    }
+    
     func handleClientError(clientError: Error) {
-        // TODO: Better handling of client error
-        print("ERROR: Client Error - \(clientError.localizedDescription)")
+        logger.error("Client Error - \(clientError.localizedDescription)")
     }
     
     func handleServerError(serverResponse: URLResponse?) {
-        // TODO: Better handling of server error
         guard let httpResponse = serverResponse as? HTTPURLResponse else {
-            print("ERROR: Server Response not a HTTP response")
+            logger.error("Server Error - Server Response not a HTTP response")
             return
         }
         
-        print("ERROR: Server Error - Status Code: \(httpResponse.statusCode)")
+        logger.error("Server Error - Status Code: \(httpResponse.statusCode)")
     }
     
+    func decodeJSON<T: Decodable>(from data: Data, to decodeType: T.Type) -> T? {
+        do {
+            let decoder = JSONDecoder()
+            decoder.keyDecodingStrategy = .convertFromSnakeCase
+            
+            return try decoder.decode(decodeType, from: data)
+            
+        } catch {
+            self.logger.error("\(error.localizedDescription)")
+        }
+        
+        return nil
+    }
     
+    func encodeJSON<T: Encodable>(from encodedData: T) -> Data? {
+        do {
+            let jsonEncoder = JSONEncoder()
+            jsonEncoder.keyEncodingStrategy = .convertToSnakeCase
+            return try jsonEncoder.encode(encodedData)
+        } catch {
+            logger.error("\(error.localizedDescription)")
+        }
+        
+        return nil
+    }
     
 }
