@@ -27,8 +27,6 @@
 		30AA759D267A1B3700D56B99 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 30AA759B267A1B3700D56B99 /* Main.storyboard */; };
 		30AA759F267A1B3700D56B99 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 30AA759E267A1B3700D56B99 /* Assets.xcassets */; };
 		30AA75A2267A1B3700D56B99 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 30AA75A0267A1B3700D56B99 /* LaunchScreen.storyboard */; };
-		30AA75AD267A1B3700D56B99 /* rmf_ar_appTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30AA75AC267A1B3700D56B99 /* rmf_ar_appTests.swift */; };
-		30AA75B8267A1B3700D56B99 /* rmf_ar_appUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30AA75B7267A1B3700D56B99 /* rmf_ar_appUITests.swift */; };
 		30B231F8267B5B6B00265D9A /* ARAssets.rcproject in Sources */ = {isa = PBXBuildFile; fileRef = 30B231F7267B5B6B00265D9A /* ARAssets.rcproject */; };
 		30C3E04826802CC2009ABCFD /* RobotStateManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30C3E04726802CC2009ABCFD /* RobotStateManager.swift */; };
 		30D39D3A267CA90A00C92D8D /* BuilldingMap.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30D39D39267CA90A00C92D8D /* BuilldingMap.swift */; };
@@ -76,11 +74,7 @@
 		30AA75A1267A1B3700D56B99 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		30AA75A3267A1B3700D56B99 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		30AA75A8267A1B3700D56B99 /* rmf_ar_appTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = rmf_ar_appTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		30AA75AC267A1B3700D56B99 /* rmf_ar_appTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = rmf_ar_appTests.swift; sourceTree = "<group>"; };
-		30AA75AE267A1B3700D56B99 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		30AA75B3267A1B3700D56B99 /* rmf_ar_appUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = rmf_ar_appUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		30AA75B7267A1B3700D56B99 /* rmf_ar_appUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = rmf_ar_appUITests.swift; sourceTree = "<group>"; };
-		30AA75B9267A1B3700D56B99 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		30B231F7267B5B6B00265D9A /* ARAssets.rcproject */ = {isa = PBXFileReference; lastKnownFileType = file.rcproject; path = ARAssets.rcproject; sourceTree = "<group>"; };
 		30C3E04726802CC2009ABCFD /* RobotStateManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RobotStateManager.swift; sourceTree = "<group>"; };
 		30D39D39267CA90A00C92D8D /* BuilldingMap.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BuilldingMap.swift; sourceTree = "<group>"; };
@@ -213,8 +207,6 @@
 			isa = PBXGroup;
 			children = (
 				30AA7594267A1B3700D56B99 /* rmf_ar_app */,
-				30AA75AB267A1B3700D56B99 /* rmf_ar_appTests */,
-				30AA75B6267A1B3700D56B99 /* rmf_ar_appUITests */,
 				30AA7593267A1B3700D56B99 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -241,24 +233,6 @@
 				30AA75A3267A1B3700D56B99 /* Info.plist */,
 			);
 			path = rmf_ar_app;
-			sourceTree = "<group>";
-		};
-		30AA75AB267A1B3700D56B99 /* rmf_ar_appTests */ = {
-			isa = PBXGroup;
-			children = (
-				30AA75AC267A1B3700D56B99 /* rmf_ar_appTests.swift */,
-				30AA75AE267A1B3700D56B99 /* Info.plist */,
-			);
-			path = rmf_ar_appTests;
-			sourceTree = "<group>";
-		};
-		30AA75B6267A1B3700D56B99 /* rmf_ar_appUITests */ = {
-			isa = PBXGroup;
-			children = (
-				30AA75B7267A1B3700D56B99 /* rmf_ar_appUITests.swift */,
-				30AA75B9267A1B3700D56B99 /* Info.plist */,
-			);
-			path = rmf_ar_appUITests;
 			sourceTree = "<group>";
 		};
 		30B231F9267B7CA500265D9A /* Resources */ = {
@@ -436,7 +410,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				30AA75AD267A1B3700D56B99 /* rmf_ar_appTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -444,7 +417,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				30AA75B8267A1B3700D56B99 /* rmf_ar_appUITests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
