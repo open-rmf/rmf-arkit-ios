@@ -10,7 +10,7 @@ import os
 
 class NetworkManager {
     
-    let logger = Logger(subsystem: Bundle.main.bundleIdentifier!, category: "network")
+    let logger = Logger(subsystem: Bundle.main.bundleIdentifier!, category: "NetworkManager")
     
     // MARK: - REST Methods
     func sendGetRequest<T: Decodable>(urlString: String, responseBodyType: T.Type, completionHandler: @escaping (T) -> Void) {
