@@ -7,7 +7,17 @@
 
 import Foundation
 
-struct TrajectoryRequest: Encodable {
+// MARK: - Server Requests
+protocol TrajectoryServerRequest: Encodable {
+    associatedtype paramType
+    
+    var request: String { get }
+    var param: paramType { get }
+}
+
+struct TrajectoryRequest: TrajectoryServerRequest {
+    typealias paramType = TrajectoryParam
+    
     let request = "trajectory"
     let param: TrajectoryParam
     
@@ -22,23 +32,49 @@ struct TrajectoryRequest: Encodable {
     }
 }
 
-struct TrajectoryResponse: Decodable {
+struct TimeRequest: TrajectoryServerRequest {
+    typealias paramType = [String]
+    
+    let request = "time"
+    let param: [String] = []
+}
+
+
+// MARK: - Server Responses
+protocol TrajectoryServerResponse: Decodable {
+    associatedtype valueType
+    
+    var response: String { get }
+    var values: [valueType] { get }
+    
+}
+
+struct TrajectoryResponse: TrajectoryServerResponse {
+    typealias valueType = RobotTrajectory
+    
     let response: String
-    let values: [TrajectoryValue]
+    let values: [valueType]
     let conflicts: [[Int]]
     
-    struct TrajectoryValue: Decodable {
+    struct RobotTrajectory: Decodable {
         let robotName: String
         let fleetName: String
         let shape: String
         let dimensions: Float
         let id: Int
-        let segments: [TrajectorySegment]
+        let segments: [SplineKnot]
         
-        struct TrajectorySegment: Decodable {
+        struct SplineKnot: Decodable {
             let t: Int
             let v: [Float]
             let x: [Float]
         }
     }
+}
+
+struct TimeResponse: TrajectoryServerResponse {
+    typealias valueType = Int
+    
+    let response: String
+    let values: [valueType]
 }

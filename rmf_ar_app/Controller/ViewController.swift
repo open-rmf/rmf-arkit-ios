@@ -16,6 +16,7 @@ class ViewController: UIViewController, ARSessionDelegate {
     var networkManager: NetworkManager!
     var robotStateManager: RobotStateManager!
     var buildingMapManager: BuildingMapManager!
+    var trajectoryManager: TrajectoryManager!
     var localizer: RobotTagLocalizer!
     
     var taskViewController: TaskViewController!
@@ -27,6 +28,7 @@ class ViewController: UIViewController, ARSessionDelegate {
         networkManager = NetworkManager()
         robotStateManager = RobotStateManager(arView: arView, networkManager: networkManager)
         buildingMapManager = BuildingMapManager(arView: arView, networkManager: networkManager)
+        trajectoryManager = TrajectoryManager(arView: arView, networkManager: networkManager)
         localizer = RobotTagLocalizer(arView: arView)
         
         taskViewController = self.storyboard?.instantiateViewController(identifier: "Task View Controller")
