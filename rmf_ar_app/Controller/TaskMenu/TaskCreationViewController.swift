@@ -212,6 +212,7 @@ class TaskCreationViewController: FormViewController {
             }
             
             row.add(rule: notSameAsEndLocationRule)
+            row.add(rule: RuleRequired())
         }
         .onRowValidationChanged { cell, row in
             self.visualizeValidationError(cell: cell, row: row)
@@ -246,6 +247,7 @@ class TaskCreationViewController: FormViewController {
             }
             
             row.add(rule: notSameAsStartLocationRule)
+            row.add(rule: RuleRequired())
         }
         .onRowValidationChanged { cell, row in
             self.visualizeValidationError(cell: cell, row: row)
