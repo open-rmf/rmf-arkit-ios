@@ -7,6 +7,12 @@
 
 import Foundation
 
+struct TrackedRobot {
+    let robotState: RobotState
+    var isTracked: Bool
+    var lastSeen: Double?
+}
+
 struct RobotState: Decodable {
     
     let robotName: String

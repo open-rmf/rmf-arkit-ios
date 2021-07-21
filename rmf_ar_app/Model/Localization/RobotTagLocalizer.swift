@@ -29,13 +29,23 @@ class RobotTagLocalizer {
             return
         }
         
-        guard let robotStates = notification.userInfo as? [String: RobotState] else {
+        guard let trackedRobotsDict = notification.userInfo as? [String: TrackedRobot] else {
             print("ERROR: Notification \(notification.name)'s user info did not match expected value")
             return
         }
         
+        // Sort robots according to most recently seen (i.e. last seen should be as big as possible)
+        let sortedRobots = trackedRobotsDict.values.sorted(by: {first, second in
+            return first.lastSeen ?? 0 > second.lastSeen ?? 0
+        })
+        
+        if !(sortedRobots.first?.isTracked ?? false) {
+            print("INFO: No Robot tracked yet")
+            return
+        }
+        
         // Retrieve the robot state and its corresponding anchor
-        guard let robot = robotStates.first?.value else {return} // TODO: Select best robot state (use most recent?)
+        guard let robot = sortedRobots.first?.robotState else { return }
         guard let anchor = arView.session.currentFrame?.anchors.first(where: {$0.name == robot.robotName}) else {return}
         
         
