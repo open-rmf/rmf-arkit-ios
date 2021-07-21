@@ -27,8 +27,8 @@ struct NavGraph: Codable {
 }
 
 struct Vertex: Codable {
-    let x: Double
-    let y: Double
+    let x: Float
+    let y: Float
     let name: String
     let params: [Param?]
 }
