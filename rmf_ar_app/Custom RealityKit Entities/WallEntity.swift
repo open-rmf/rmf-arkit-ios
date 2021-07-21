@@ -20,10 +20,10 @@ class WallEntity: Entity, HasModel {
     required init(vertex1: Vertex, vertex2: Vertex) {
         super.init()
         
-        let directionVec = simd_float2(Float(vertex2.x), Float(vertex2.y)) - simd_float2(Float(vertex1.x), Float(vertex1.y))
+        let directionVec = simd_float2(vertex2.x, vertex2.y) - simd_float2(vertex1.x, vertex1.y)
         
         let edgeLength = length(directionVec)
-        let midpoint = simd_float2(Float(vertex1.x), Float(vertex1.y)) + directionVec/2
+        let midpoint = simd_float2(vertex1.x, vertex1.y) + directionVec/2
         let zAxisRotation = atan2(directionVec.y, directionVec.x)
         let edgeRotation = simd_quatf(angle: zAxisRotation, axis: [0,0,1])
         
