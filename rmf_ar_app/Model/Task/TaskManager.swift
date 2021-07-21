@@ -22,7 +22,6 @@ class TaskManager {
     // MARK: - Public Methods
     init(networkManager: NetworkManager) {
         self.networkManager = networkManager
-        self.downloadTaskList()
     }
     
     func downloadTaskList() {
