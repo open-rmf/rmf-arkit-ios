@@ -60,15 +60,19 @@ class BuildingMapManager {
         }
         
         
-        // Create an anchor for the building map
-        let buildingMapAnchor = AnchorEntity(world: [0,0,0])
-        buildingMapAnchor.name = "buildingMap"
-        
-        addNavGraphs(fromLevel: currentLevel, toEntity: buildingMapAnchor)
-        addWallGraph(fromLevel: currentLevel, toEntity: buildingMapAnchor)
-        
-        // Finally add the building map to the scene
-        arView.scene.addAnchor(buildingMapAnchor)
+
+        // Any drawing must be done on the main thread
+        DispatchQueue.main.async {
+            // Create an anchor for the building map
+            let buildingMapAnchor = AnchorEntity(world: [0,0,0])
+            buildingMapAnchor.name = "buildingMap"
+            
+            self.addNavGraphs(fromLevel: currentLevel, toEntity: buildingMapAnchor)
+            self.addWallGraph(fromLevel: currentLevel, toEntity: buildingMapAnchor)
+            
+            // Finally add the building map to the scene
+            self.arView.scene.addAnchor(buildingMapAnchor)
+        }
     }
 
     func addNavGraphs(fromLevel level: Level, toEntity parentEntity: Entity){
@@ -115,7 +119,7 @@ class BuildingMapManager {
             let v1 = navGraph.vertices[edge.v1Idx]
             let v2 = navGraph.vertices[edge.v2Idx]
                        
-            let edge = EdgeEntity(vertex1: v1, vertex2: v2, color: .green)
+            let edge = EdgeEntity(vertex1: v1, vertex2: v2, color: .cyan)
             
             parentEntity.addChild(edge)
         }
