@@ -168,8 +168,19 @@ class NetworkManager {
             
             return try decoder.decode(decodeType, from: data)
             
+        } catch let DecodingError.dataCorrupted(context) {
+            logger.error("\(context.debugDescription)")
+        } catch let DecodingError.keyNotFound(key, context) {
+            logger.error("Key '\(key.stringValue)' not found: \(context.debugDescription)")
+            logger.error("codingPath: \(context.codingPath.description)")
+        } catch let DecodingError.valueNotFound(value, context) {
+            logger.error("Value '\(value)' not found: \(context.debugDescription)")
+            logger.error("codingPath: \(context.codingPath)")
+        } catch let DecodingError.typeMismatch(type, context)  {
+            logger.error("Type '\(String(describing: type))' mismatch: \(context.debugDescription)")
+            logger.error("codingPath:\(context.codingPath.description)")
         } catch {
-            logger.error("\(error.localizedDescription)")
+            logger.error("JSON Decode error: \(error.localizedDescription)")
         }
         
         return nil
@@ -180,8 +191,10 @@ class NetworkManager {
             let jsonEncoder = JSONEncoder()
             jsonEncoder.keyEncodingStrategy = .convertToSnakeCase
             return try jsonEncoder.encode(encodedData)
+        } catch let EncodingError.invalidValue(type, context) {
+            logger.error("Type '\(String(describing: type))' mismatch: \(context.debugDescription)")
         } catch {
-            logger.error("\(error.localizedDescription)")
+            logger.error("JSON Encode error: \(error.localizedDescription)")
         }
         
         return nil
