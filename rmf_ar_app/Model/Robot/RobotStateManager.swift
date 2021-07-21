@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import os
 import RealityKit
 import ARKit
 
@@ -15,8 +16,7 @@ class RobotStateManager {
 
     var arView: ARView
     
-    var robotStates: [String:RobotState] = [:]
-    var trackedTags: [String] = []
+    var robots: [String: TrackedRobot] = [:]
     
     var robotUIAsset: Entity
     
@@ -24,14 +24,22 @@ class RobotStateManager {
     
     var downloadTimer: Timer!
     
+    let logger = Logger(subsystem: Bundle.main.bundleIdentifier!, category: "RobotStateManager")
+    
     init(arView: ARView, networkManager: NetworkManager) {
         self.arView = arView
         
         self.networkManager = networkManager
+
+        do {
+            self.robotUIAsset = try Entity.load(named: "robotUI.usdz")
+        } catch {
+            logger.error("\(error.localizedDescription)")
+            self.robotUIAsset = Entity()
+        }
+
         
-        self.robotUIAsset = try! Entity.load(named: "robotUI")
-        
-        self.downloadTimer = Timer(timeInterval: 1.0, target: self, selector: #selector(downloadAndUpdateRobotStates), userInfo: nil, repeats: true)
+        self.downloadTimer = Timer(timeInterval: 1.0, target: self, selector: #selector(updateRobotStates), userInfo: nil, repeats: true)
         
         // Add some tolerance to reduce computational load
         self.downloadTimer.tolerance = 0.2
@@ -43,16 +51,16 @@ class RobotStateManager {
         // Only process if the anchor is an image anchor
         guard let imageAnchor = anchor as? ARImageAnchor else {return}
         
-        self.manageImageAnchor(imageAnchor: imageAnchor)
-    }
-    
-    func manageImageAnchor(imageAnchor: ARImageAnchor) {
-        
         let tagName = imageAnchor.name!
         
-        // Only do something if we have not seen this tag before
-        if !trackedTags.contains(tagName) {
-
+        guard var robot = robots[tagName] else {
+            logger.error("Robot with name: \(tagName) not found")
+            return
+        }
+        
+        if !robot.isTracked {
+            // Robot not seen before so create the necessary UI for it
+            
             // Create a copy of the UI for robots
             let uiEntity = self.robotUIAsset.clone(recursive: true)
             
@@ -62,20 +70,32 @@ class RobotStateManager {
 
             sceneAnchor.addChild(uiEntity)
             self.arView.scene.addAnchor(sceneAnchor)
-            self.trackedTags.append(tagName)
         }
+        
+        robot.lastSeen = NSDate().timeIntervalSince1970
+        robot.isTracked = true
+        robots[tagName] = robot
     }
     
-    @objc func downloadAndUpdateRobotStates() {
+    @objc func updateRobotStates() {
         self.networkManager.sendGetRequest(urlString: ROBOT_STATES_URL, responseBodyType: [RobotState].self) {
             model in
             
             for state in model {
-                self.robotStates[state.robotName] = state
+                
+                if self.robots.contains(where: {key, _ in key == state.robotName}) {
+                    let currentData = self.robots[state.robotName]!
+                    let updatedData = TrackedRobot(robotState: state, isTracked: currentData.isTracked, lastSeen: currentData.lastSeen)
+                    self.robots[state.robotName] = updatedData
+                } else {
+                    self.robots[state.robotName] = TrackedRobot(robotState: state, isTracked: false, lastSeen: nil)
+                }
             }
             
-            // Something is wrong with updateTextInUI (mainly the generateText).
-            // For some reason wrapping in a DispatchQueue makes it work...
+            // Publish robot data
+            NotificationCenter.default.post(name: Notification.Name("robotStatesUpdated"), object: nil, userInfo: self.robots)
+            
+            // Drawing must be done on the main thread
             DispatchQueue.main.async {
                 self.updateUIForAllRobots()
             }
@@ -86,19 +106,12 @@ class RobotStateManager {
     func updateUIForAllRobots() {
 
         // Update all UIs linked to robot states
-        for (name, state) in self.robotStates {
+        for (name, trackingData) in self.robots {
             guard let anchorEntity = self.arView.scene.findEntity(named: name) else {
                 continue
             }
-            self.updateTextInRobotUI(uiEntity: anchorEntity.children[0], state: state)
+            self.updateTextInRobotUI(uiEntity: anchorEntity.children[0], state: trackingData.robotState)
         }
-        
-        // Check that we are tracking tags and send a notification that the robot states were updated along with the updated tracked states
-        if trackedTags.count != 0 {
-            let trackedRobotStates = robotStates.filter {trackedTags.contains($0.key)}
-            NotificationCenter.default.post(name: Notification.Name("robotStatesUpdated"), object: nil, userInfo: trackedRobotStates)
-        }
-
     }
     
     func updateTextInRobotUI(uiEntity: Entity, state: RobotState) {
