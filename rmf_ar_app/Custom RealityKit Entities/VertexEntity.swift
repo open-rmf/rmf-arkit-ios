@@ -26,7 +26,7 @@ class VertexEntity: Entity, HasModel {
         let nodeMaterial = SimpleMaterial(color: .white, isMetallic: false)
         let nodeMesh = MeshResource.generateBox(size: 0.1)
         
-        let nodeTranslation = simd_float3([Float(vertex.x), Float(vertex.y), NODE_Z_OFFSET])
+        let nodeTranslation = simd_float3([vertex.x, vertex.y, NODE_Z_OFFSET])
         
         self.components[ModelComponent] = ModelComponent(mesh: nodeMesh, materials: [nodeMaterial])
         self.components[Transform] = Transform(scale: [1,1,1], rotation: simd_quatf(), translation: nodeTranslation)
