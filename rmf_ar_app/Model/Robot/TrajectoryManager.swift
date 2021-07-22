@@ -106,7 +106,7 @@ class TrajectoryManager {
         }
     }
     
-    func addTrajectory(trajectory: TrajectoryResponse.RobotTrajectory, currentTime: Int) {
+    func addTrajectory(trajectory: RobotTrajectory, currentTime: Int) {
         let trajEntity = TrajectoryEntity(trajectory: trajectory, currentTime: currentTime, color: .green)
         trajectoryAnchor.addChild(trajEntity)
     }
