@@ -20,7 +20,7 @@ class TrajectoryEntity: Entity {
         super.init()
     }
     
-    required init(trajectory: TrajectoryResponse.RobotTrajectory, currentTime: Int, color: UIColor) {
+    required init(trajectory: RobotTrajectory, currentTime: Int, color: UIColor) {
         super.init()
         
         for i in 0..<trajectory.segments.count - 1 {
@@ -42,7 +42,7 @@ class TrajectoryEntity: Entity {
         }
     }
     
-    private func addFullSegment(startKnot: TrajectoryResponse.RobotTrajectory.SplineKnot, endKnot: TrajectoryResponse.RobotTrajectory.SplineKnot, color: UIColor) {
+    private func addFullSegment(startKnot: SplineKnot, endKnot: SplineKnot, color: UIColor) {
         
         let directionVec = simd_float2(endKnot.x[0], endKnot.x[1]) - simd_float2(startKnot.x[0], startKnot.x[1])
         
@@ -59,7 +59,7 @@ class TrajectoryEntity: Entity {
         self.addChild(pathModel, preservingWorldTransform: false)
     }
     
-    private func addPartialSegment(startKnot: TrajectoryResponse.RobotTrajectory.SplineKnot, endKnot: TrajectoryResponse.RobotTrajectory.SplineKnot, currentTime: Int, color: UIColor) {
+    private func addPartialSegment(startKnot: SplineKnot, endKnot: SplineKnot, currentTime: Int, color: UIColor) {
          
         let splineCoefficients = getSplineCoefficients(startKnot: startKnot, endKnot: endKnot)
         
@@ -70,7 +70,7 @@ class TrajectoryEntity: Entity {
         let yPos = splineCoefficients.y.a * pow(t, 3) + splineCoefficients.y.b * pow(t, 2) + splineCoefficients.y.c * t + splineCoefficients.y.d
         let theta = splineCoefficients.th.a * pow(t, 3) + splineCoefficients.th.b * pow(t, 2) + splineCoefficients.th.c * t + splineCoefficients.th.d
         
-        let intermediateKnot = TrajectoryResponse.RobotTrajectory.SplineKnot(t: currentTime, v: startKnot.v, x: [xPos, yPos, theta])
+        let intermediateKnot = SplineKnot(t: currentTime, v: startKnot.v, x: [xPos, yPos, theta])
     
         addFullSegment(startKnot: intermediateKnot, endKnot: endKnot, color: color)
     }
@@ -79,7 +79,7 @@ class TrajectoryEntity: Entity {
         return Float(currentTime - tInitial) / Float(tFinal - tInitial)
     }
     
-    private func getSplineCoefficients(startKnot: TrajectoryResponse.RobotTrajectory.SplineKnot, endKnot: TrajectoryResponse.RobotTrajectory.SplineKnot) -> SplineCoefficients {
+    private func getSplineCoefficients(startKnot: SplineKnot, endKnot: SplineKnot) -> SplineCoefficients {
         
         let x = computeCoefficients(initialPosition: startKnot.x[0], finalPosition: endKnot.x[0], initialVelocity: startKnot.v[0], finalVelocity: endKnot.v[0], initialTime: startKnot.t, finalTime: endKnot.t)
         

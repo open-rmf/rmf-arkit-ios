@@ -56,20 +56,21 @@ struct TrajectoryResponse: TrajectoryServerResponse {
     let values: [valueType]
     let conflicts: [[Int]]
     
-    struct RobotTrajectory: Decodable {
-        let robotName: String
-        let fleetName: String
-        let shape: String
-        let dimensions: Float
-        let id: Int
-        let segments: [SplineKnot]
-        
-        struct SplineKnot: Decodable {
-            let t: Int
-            let v: [Float]
-            let x: [Float]
-        }
-    }
+}
+
+struct RobotTrajectory: Decodable {
+    let robotName: String
+    let fleetName: String
+    let shape: String
+    let dimensions: Float
+    let id: Int
+    let segments: [SplineKnot]
+}
+
+struct SplineKnot: Decodable {
+    let t: Int
+    let v: [Float]
+    let x: [Float]
 }
 
 struct TimeResponse: TrajectoryServerResponse {
