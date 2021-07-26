@@ -9,10 +9,11 @@ import Foundation
 import RealityKit
 import UIKit
 
-class TrajectoryEntity: Entity {
+class TrajectoryEntity: Entity, HasCollision {
     
-    let Z_OFFSET: Float = 1.0
+    static let Z_OFFSET: Float = 0.8
     let MESH_WIDTH: Float = 0.05
+    let HEIGHT_LEVEL_STEP: Float = 0.1
     
     var segments: [ModelEntity] = []
     
@@ -20,8 +21,10 @@ class TrajectoryEntity: Entity {
         super.init()
     }
     
-    required init(trajectory: RobotTrajectory, currentTime: Int, color: UIColor) {
+    required init(trajectory: RobotTrajectory, currentTime: Int, color: UIColor, heightLevel: Int) {
         super.init()
+        
+        self.name = "trajectory\(trajectory.id)"
         
         for i in 0..<trajectory.segments.count - 1 {
             let startKnot = trajectory.segments[i]
@@ -33,16 +36,16 @@ class TrajectoryEntity: Entity {
             }
             else if currentTime <= startKnot.t {
                 // This trajectory is in the future and should be fully visualized
-                addFullSegment(startKnot: startKnot, endKnot: endKnot, color: color)
+                addFullSegment(startKnot: startKnot, endKnot: endKnot, color: color, heightLevel: heightLevel)
             }
             else if currentTime > startKnot.t && currentTime < endKnot.t {
                 // This trajectory is the current one and should be partially visualized based on current time
-                addPartialSegment(startKnot: startKnot, endKnot: endKnot, currentTime: currentTime, color: color)
+                addPartialSegment(startKnot: startKnot, endKnot: endKnot, currentTime: currentTime, color: color, heightLevel: heightLevel)
             }
         }
     }
     
-    private func addFullSegment(startKnot: SplineKnot, endKnot: SplineKnot, color: UIColor) {
+    private func addFullSegment(startKnot: SplineKnot, endKnot: SplineKnot, color: UIColor, heightLevel: Int) {
         
         let directionVec = simd_float2(endKnot.x[0], endKnot.x[1]) - simd_float2(startKnot.x[0], startKnot.x[1])
         
@@ -54,12 +57,17 @@ class TrajectoryEntity: Entity {
         
         let pathModel = ModelEntity(mesh: .generateBox(width: edgeLength, height: MESH_WIDTH, depth: MESH_WIDTH), materials: [SimpleMaterial(color: color, roughness: 1.0, isMetallic: false)])
         
-        pathModel.components[Transform] = Transform(scale: [1,1,1], rotation: edgeRotation, translation: [midpoint.x, midpoint.y, Z_OFFSET])
+        let z = TrajectoryEntity.Z_OFFSET + Float(heightLevel) * HEIGHT_LEVEL_STEP
+        
+        pathModel.components[Transform] = Transform(scale: [1,1,1], rotation: edgeRotation, translation: [midpoint.x, midpoint.y, z])
+    
+        pathModel.generateCollisionShapes(recursive: true)
+        
         
         self.addChild(pathModel, preservingWorldTransform: false)
     }
     
-    private func addPartialSegment(startKnot: SplineKnot, endKnot: SplineKnot, currentTime: Int, color: UIColor) {
+    private func addPartialSegment(startKnot: SplineKnot, endKnot: SplineKnot, currentTime: Int, color: UIColor, heightLevel: Int) {
          
         let splineCoefficients = getSplineCoefficients(startKnot: startKnot, endKnot: endKnot)
         
@@ -72,7 +80,7 @@ class TrajectoryEntity: Entity {
         
         let intermediateKnot = SplineKnot(t: currentTime, v: startKnot.v, x: [xPos, yPos, theta])
     
-        addFullSegment(startKnot: intermediateKnot, endKnot: endKnot, color: color)
+        addFullSegment(startKnot: intermediateKnot, endKnot: endKnot, color: color, heightLevel: heightLevel)
     }
     
     private func computeT(currentTime: Int, tInitial: Int, tFinal: Int) -> Float {

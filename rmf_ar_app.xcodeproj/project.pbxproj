@@ -33,6 +33,7 @@
 		30C3E04826802CC2009ABCFD /* RobotStateManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30C3E04726802CC2009ABCFD /* RobotStateManager.swift */; };
 		30D39D3A267CA90A00C92D8D /* BuilldingMap.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30D39D39267CA90A00C92D8D /* BuilldingMap.swift */; };
 		30DE5EB52681FD9E001FDFFD /* RobotTagLocalizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30DE5EB42681FD9E001FDFFD /* RobotTagLocalizer.swift */; };
+		30E48CCB26A9549F00939389 /* TrajectoryEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30E48CCA26A9549F00939389 /* TrajectoryEntity.swift */; };
 		30ECD020269407B100E12C55 /* PresentationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30ECD01F269407B100E12C55 /* PresentationController.swift */; };
 /* End PBXBuildFile section */
 
@@ -83,6 +84,7 @@
 		30C3E04726802CC2009ABCFD /* RobotStateManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RobotStateManager.swift; sourceTree = "<group>"; };
 		30D39D39267CA90A00C92D8D /* BuilldingMap.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BuilldingMap.swift; sourceTree = "<group>"; };
 		30DE5EB42681FD9E001FDFFD /* RobotTagLocalizer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RobotTagLocalizer.swift; sourceTree = "<group>"; };
+		30E48CCA26A9549F00939389 /* TrajectoryEntity.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TrajectoryEntity.swift; sourceTree = "<group>"; };
 		30ECD01F269407B100E12C55 /* PresentationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PresentationController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -115,6 +117,7 @@
 		3009E44526830DD700A3D262 /* Custom RealityKit Entities */ = {
 			isa = PBXGroup;
 			children = (
+				30E48CCA26A9549F00939389 /* TrajectoryEntity.swift */,
 				3009E4432683082600A3D262 /* EdgeEntity.swift */,
 				3009E448268322C400A3D262 /* VertexEntity.swift */,
 				308BEB812685D71C00757DC1 /* WallEntity.swift */,
@@ -401,6 +404,7 @@
 				3011B531267C393500D17FD9 /* NetworkManager.swift in Sources */,
 				30DE5EB52681FD9E001FDFFD /* RobotTagLocalizer.swift in Sources */,
 				307ECE17269DAA88001DC4AD /* TrajectoryManager.swift in Sources */,
+				30E48CCB26A9549F00939389 /* TrajectoryEntity.swift in Sources */,
 				30C3E04826802CC2009ABCFD /* RobotStateManager.swift in Sources */,
 				306C448F2694489300386D11 /* TaskManager.swift in Sources */,
 				30ECD020269407B100E12C55 /* PresentationController.swift in Sources */,
