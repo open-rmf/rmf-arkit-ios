@@ -16,9 +16,10 @@
 		30756AB22697E7F200024055 /* DashboardConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30756AB12697E7F200024055 /* DashboardConfig.swift */; };
 		307C32DD2696D6EB0007EF4C /* Eureka in Frameworks */ = {isa = PBXBuildFile; productRef = 307C32DC2696D6EB0007EF4C /* Eureka */; };
 		307C32DF2696D7220007EF4C /* TaskCreationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 307C32DE2696D7220007EF4C /* TaskCreationViewController.swift */; };
-		307C32E12696E5EC0007EF4C /* dashboard_config.json in Resources */ = {isa = PBXBuildFile; fileRef = 307C32E02696E5EC0007EF4C /* dashboard_config.json */; };
 		307ECE15269D5DE1001DC4AD /* Trajectory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 307ECE14269D5DE1001DC4AD /* Trajectory.swift */; };
 		307ECE17269DAA88001DC4AD /* TrajectoryManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 307ECE16269DAA88001DC4AD /* TrajectoryManager.swift */; };
+		307FE3DB26AFA5760083180A /* URLConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 307FE3DA26AFA5760083180A /* URLConstants.swift */; };
+		307FE3DD26AFAC850083180A /* NetworkManagerError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 307FE3DC26AFAC850083180A /* NetworkManagerError.swift */; };
 		308BEB4026858A7500757DC1 /* robotUI.usdz in Resources */ = {isa = PBXBuildFile; fileRef = 308BEB3F26858A7500757DC1 /* robotUI.usdz */; };
 		308BEB822685D71C00757DC1 /* WallEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 308BEB812685D71C00757DC1 /* WallEntity.swift */; };
 		308C0DF3267B217D0077C844 /* RobotState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 308C0DF2267B217D0077C844 /* RobotState.swift */; };
@@ -63,9 +64,10 @@
 		306C449126944E4400386D11 /* Task.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Task.swift; sourceTree = "<group>"; };
 		30756AB12697E7F200024055 /* DashboardConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DashboardConfig.swift; sourceTree = "<group>"; };
 		307C32DE2696D7220007EF4C /* TaskCreationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskCreationViewController.swift; sourceTree = "<group>"; };
-		307C32E02696E5EC0007EF4C /* dashboard_config.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = dashboard_config.json; sourceTree = "<group>"; };
 		307ECE14269D5DE1001DC4AD /* Trajectory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Trajectory.swift; sourceTree = "<group>"; };
 		307ECE16269DAA88001DC4AD /* TrajectoryManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrajectoryManager.swift; sourceTree = "<group>"; };
+		307FE3DA26AFA5760083180A /* URLConstants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = URLConstants.swift; sourceTree = "<group>"; };
+		307FE3DC26AFAC850083180A /* NetworkManagerError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkManagerError.swift; sourceTree = "<group>"; };
 		308BEB3F26858A7500757DC1 /* robotUI.usdz */ = {isa = PBXFileReference; lastKnownFileType = file.usdz; path = robotUI.usdz; sourceTree = "<group>"; };
 		308BEB812685D71C00757DC1 /* WallEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WallEntity.swift; sourceTree = "<group>"; };
 		308C0DF2267B217D0077C844 /* RobotState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RobotState.swift; sourceTree = "<group>"; };
@@ -160,6 +162,7 @@
 			isa = PBXGroup;
 			children = (
 				3011B530267C393500D17FD9 /* NetworkManager.swift */,
+				307FE3DC26AFAC850083180A /* NetworkManagerError.swift */,
 			);
 			path = Network;
 			sourceTree = "<group>";
@@ -250,7 +253,7 @@
 				308BEB3F26858A7500757DC1 /* robotUI.usdz */,
 				30B231F7267B5B6B00265D9A /* ARAssets.rcproject */,
 				30AA759E267A1B3700D56B99 /* Assets.xcassets */,
-				307C32E02696E5EC0007EF4C /* dashboard_config.json */,
+				307FE3DA26AFA5760083180A /* URLConstants.swift */,
 			);
 			path = Resources;
 			sourceTree = "<group>";
@@ -364,7 +367,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				307C32E12696E5EC0007EF4C /* dashboard_config.json in Resources */,
 				308BEB4026858A7500757DC1 /* robotUI.usdz in Resources */,
 				30AA75A2267A1B3700D56B99 /* LaunchScreen.storyboard in Resources */,
 				30AA759F267A1B3700D56B99 /* Assets.xcassets in Resources */,
@@ -398,6 +400,7 @@
 				30D39D3A267CA90A00C92D8D /* BuilldingMap.swift in Sources */,
 				30A476C22693102A00CC5E99 /* TaskViewController.swift in Sources */,
 				306C448D2694478700386D11 /* TaskCell.swift in Sources */,
+				307FE3DD26AFAC850083180A /* NetworkManagerError.swift in Sources */,
 				3094768A2680310D00164DA6 /* BuildingMapManager.swift in Sources */,
 				30756AB22697E7F200024055 /* DashboardConfig.swift in Sources */,
 				30AA7598267A1B3700D56B99 /* ViewController.swift in Sources */,
@@ -410,6 +413,7 @@
 				30ECD020269407B100E12C55 /* PresentationController.swift in Sources */,
 				30B231F8267B5B6B00265D9A /* ARAssets.rcproject in Sources */,
 				307ECE15269D5DE1001DC4AD /* Trajectory.swift in Sources */,
+				307FE3DB26AFA5760083180A /* URLConstants.swift in Sources */,
 				3009E4442683082600A3D262 /* EdgeEntity.swift in Sources */,
 				307C32DF2696D7220007EF4C /* TaskCreationViewController.swift in Sources */,
 				3009E449268322C400A3D262 /* VertexEntity.swift in Sources */,
