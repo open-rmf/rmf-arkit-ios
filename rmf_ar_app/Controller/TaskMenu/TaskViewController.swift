@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import os
 
 // MARK: - ViewController
 class TaskViewController: UIViewController {
@@ -24,6 +25,9 @@ class TaskViewController: UIViewController {
     private var updateTimer: Timer!
     
     var taskManager: TaskManager!
+    var taskCreationVC: TaskCreationViewController!
+    
+    let logger = Logger(subsystem: Bundle.main.bundleIdentifier!, category: "TaskViewController")
         
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -34,6 +38,9 @@ class TaskViewController: UIViewController {
         
         taskCollection.delegate = self
         taskCollection.dataSource = self
+        
+        taskCreationVC = TaskCreationViewController()
+        taskCreationVC.taskManager = self.taskManager
         
         startUpdateTimer()
     }
@@ -81,15 +88,14 @@ class TaskViewController: UIViewController {
     }
     
     @IBAction func addTaskButtonPressed(_ sender: Any) {
-        let taskCreationVC = TaskCreationViewController()
+        // We need a Navigation Controller as it gives us the top toolbar
+        // i.e backbutton + title
         let taskCreationNavigationVC = UINavigationController(rootViewController: taskCreationVC)
-        
-        taskCreationVC.taskManager = self.taskManager
-        
+
         taskCreationNavigationVC.modalTransitionStyle = .coverVertical
         taskCreationNavigationVC.modalPresentationStyle = .fullScreen
         
-        present(taskCreationNavigationVC, animated: true, completion: nil)
+        self.present(taskCreationNavigationVC, animated: true, completion: nil)
     }
     
     private func startUpdateTimer() {
@@ -140,6 +146,8 @@ extension TaskViewController: UICollectionViewDataSource {
         // refers to correct task inside taskList since latest data may have shifted the taskList ordering
         stopUpdateTimer()
         
+        // TODO: Use a semaphore on the taskList to ensure that theres no async issues that could occur
+        
         let selectedTask = self.taskManager.taskList[indexToCancel]
         
         // Cannot cancel a task that has ended
@@ -156,7 +164,7 @@ extension TaskViewController: UICollectionViewDataSource {
             
             // Cancel the task and on completion remove the temporary alert then show a new alert stating outcome
             self.taskManager.cancelTask(taskId: selectedTask.taskId) {
-                success in
+                responseResult in
                 
                 // UI handling must be done on main thread
                 DispatchQueue.main.async {
@@ -166,13 +174,13 @@ extension TaskViewController: UICollectionViewDataSource {
                         var title: String
                         var message: String
                         
-                        switch success {
-                        case true:
+                        switch responseResult {
+                        case .success(_):
                             title = "Cancellation Success"
-                            message = "The selected task has been cancelled"
-                        case false:
+                            message = "\(selectedTask.taskId) has been cancelled"
+                        case .failure(let e):
                             title = "Cancellation Failure"
-                            message = "The selected task could not be cancelled"
+                            message = "The selected task could not be cancelled: \(e.localizedDescription)"
                         }
 
                         let outcomeAlert = UIAlertController(title: title, message: message, preferredStyle: .alert)

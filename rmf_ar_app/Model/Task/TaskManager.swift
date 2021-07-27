@@ -6,18 +6,15 @@
 //
 
 import Foundation
+import os
 
 class TaskManager {
-    
-    // MARK: - URL Constants
-    let TASK_LIST_URL = "http://192.168.1.201:8080/task_list"
-    let SUBMIT_TASK_URL = "http://192.168.1.201:8080/submit_task"
-    let CANCEL_TASK_URL = "http://192.168.1.201:8080/cancel_task"
     
     // MARK: - Instance Variables
     var networkManager: NetworkManager
     var taskList: [TaskSummary] = []
     
+    let logger = Logger(subsystem: Bundle.main.bundleIdentifier!, category: "TaskManager")
     
     // MARK: - Public Methods
     init(networkManager: NetworkManager) {
@@ -25,10 +22,17 @@ class TaskManager {
     }
     
     func downloadTaskList() {
-        networkManager.sendGetRequest(urlString: TASK_LIST_URL, responseBodyType: [TaskSummary].self) {
-            model in
+        networkManager.sendGetRequest(urlString: URLConstants.TASK_LIST, responseBodyType: [TaskSummary].self) {
+            responseResult in
             
-            self.taskList = model
+            switch responseResult {
+            case .success(let data):
+                self.taskList = data
+            case .failure(let e):
+                self.logger.error("\(e.localizedDescription)")
+                return
+            }
+            
         }
     }
     
@@ -51,18 +55,28 @@ class TaskManager {
         
     }
     
-    func cancelTask(taskId: String, completionHandler: @escaping (Bool) -> Void) {
+    func cancelTask(taskId: String, completionHandler: @escaping (Result<CancelTaskResponse, NetworkManagerError>) -> Void) {
         let cancelTaskRequest = CancelTaskRequest(taskId: taskId)
         
-        networkManager.sendPostRequest(urlString: CANCEL_TASK_URL, requestBody: cancelTaskRequest, responseBodyType: CancelTaskResponse.self) { responseBody in
-            completionHandler(responseBody.success)
-        }
+        networkManager.sendPostRequest(urlString: URLConstants.CANCEL_TASK, requestBody: cancelTaskRequest, responseBodyType: CancelTaskResponse.self, completionHandler: completionHandler)
     }
     
     // MARK: - Private Methods
     private func sendTask<T: CreateTaskRequest>(request: T, completionHandler: @escaping (Bool, String, String) -> Void) {
-        networkManager.sendPostRequest(urlString: SUBMIT_TASK_URL, requestBody: request, responseBodyType: CreateTaskResponse.self) {
-            responseBody in
+        networkManager.sendPostRequest(urlString: URLConstants.SUBMIT_TASK, requestBody: request, responseBodyType: CreateTaskResponse.self) {
+            responseResult in
+            
+            var responseBody: CreateTaskResponse
+            
+            // Check network was succesful
+            switch responseResult {
+            case .success(let data):
+                responseBody = data
+            case .failure(let e):
+                self.logger.error("\(e.localizedDescription)")
+                completionHandler(false, "", "\(e.localizedDescription)")
+                return
+            }
             
             if responseBody.errorMsg == "" {
                 completionHandler(true, responseBody.taskId, "")

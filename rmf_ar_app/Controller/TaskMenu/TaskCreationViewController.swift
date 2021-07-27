@@ -8,10 +8,14 @@
 import Foundation
 import UIKit
 import Eureka
+import os
 
 class TaskCreationViewController: FormViewController {
     
-    var taskManager: TaskManager?
+    var taskManager: TaskManager!
+    var dashboardConfig: DashboardConfig!
+    
+    let logger = Logger(subsystem: Bundle.main.bundleIdentifier!, category: "TaskCreationViewController")
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -23,16 +27,34 @@ class TaskCreationViewController: FormViewController {
             cell.textLabel?.font = UIFont.systemFont(ofSize: 13)
             
         }
-        
-        let jsonData = loadJsonFile(forName: "dashboard_config")
-        if let dashboardConfig = parseJson(from: jsonData ?? Data("{}".utf8)) {
-            displayDashboard(from: dashboardConfig)
-        }
-        else {
-            displayDefaultDashboard()
-        }
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        if dashboardConfig == nil {
+            displayDefaultDashboard()
+            
+            taskManager.networkManager.sendGetRequest(urlString: URLConstants.DASHBOARD, responseBodyType: DashboardConfig.self) {
+                responseResult in
+                
+                switch responseResult {
+                case .success(let data):
+                    self.dashboardConfig = data
+                    
+                    // All UI operations must be done on main thread
+                    DispatchQueue.main.async {
+                        self.form.removeAll()
+                        self.displayDashboard(from: data)
+                    }
+                    
+                case .failure(let e):
+                    self.logger.error("\(e.localizedDescription)")
+                }
+            }
+        }
+    }
+
     private func setupNavigationBar() {
         
         self.navigationItem.title = "Create Task"
@@ -42,31 +64,6 @@ class TaskCreationViewController: FormViewController {
     
     @objc private func backButtonPressed() {
         self.dismiss(animated: true, completion: nil)
-    }
-    
-    private func loadJsonFile(forName name: String) -> Data? {
-        do {
-            guard let jsonPath = Bundle.main.path(forResource: name, ofType: "json") else { return nil }
-            let jsonData = try String(contentsOfFile: jsonPath).data(using: .utf8)
-            return jsonData
-        } catch {
-            print("Error during loading of \(name).json: \(error)")
-        }
-        
-        return nil
-    }
-    
-    private func parseJson(from data: Data) -> DashboardConfig? {
-        do {
-            let decoder = JSONDecoder()
-            decoder.keyDecodingStrategy = .convertFromSnakeCase
-            
-            return try decoder.decode(DashboardConfig.self, from: data)
-        } catch {
-            print("Error during parsing of json: \(error)")
-        }
-        
-        return nil
     }
     
     private func displayDashboard(from dashboardConfig: DashboardConfig) {
@@ -87,7 +84,6 @@ class TaskCreationViewController: FormViewController {
             
             <<< StepperRow("Priority").cellSetup { (cell, row) in
                 row.title = "Choose a priority"
-                row.tag = "integer"
                 row.value = 0
                 
                 // Validation
@@ -261,7 +257,6 @@ class TaskCreationViewController: FormViewController {
         
         <<< StepperRow("NumberOfLoops").cellSetup { cell, row in
             row.title = "Number of Loops"
-            row.tag = "integer"
             row.value = 1
             row.cell.stepper.minimumValue = 1
             
