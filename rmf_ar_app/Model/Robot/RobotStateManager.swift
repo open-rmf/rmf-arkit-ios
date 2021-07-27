@@ -12,8 +12,6 @@ import ARKit
 
 class RobotStateManager {
     
-    let ROBOT_STATES_URL = "http://192.168.1.201:8080/robot_list"
-
     var arView: ARView
     
     var robots: [String: TrackedRobot] = [:]
@@ -78,10 +76,21 @@ class RobotStateManager {
     }
     
     @objc func updateRobotStates() {
-        self.networkManager.sendGetRequest(urlString: ROBOT_STATES_URL, responseBodyType: [RobotState].self) {
-            model in
+        self.networkManager.sendGetRequest(urlString: URLConstants.ROBOT_STATES, responseBodyType: [RobotState].self) {
+            responseResult in
             
-            for state in model {
+            var robotStatesList: [RobotState]
+            
+            // Check network was succesful
+            switch responseResult {
+            case .success(let data):
+                robotStatesList = data
+            case .failure(let e):
+                self.logger.error("\(e.localizedDescription)")
+                return
+            }
+            
+            for state in robotStatesList {
                 
                 if self.robots.contains(where: {key, _ in key == state.robotName}) {
                     let currentData = self.robots[state.robotName]!

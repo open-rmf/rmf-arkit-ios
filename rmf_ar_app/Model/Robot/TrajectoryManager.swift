@@ -11,7 +11,6 @@ import UIKit
 import RealityKit
 
 class TrajectoryManager {
-    let TRAJ_SERVER_URL = "ws://192.168.1.201:8006"
     
     let NO_COLLISION_COLOR = UIColor.green
     let COLLISION_COLOR = UIColor.red
@@ -32,7 +31,7 @@ class TrajectoryManager {
     init(arView: ARView, networkManager: NetworkManager) {
         self.networkManager = networkManager
         
-        webSocketConnection = self.networkManager.openWebSocketConnection(urlString: TRAJ_SERVER_URL)
+        webSocketConnection = self.networkManager.openWebSocketConnection(urlString: URLConstants.TRAJ_SERVER)
         
         self.arView = arView
         trajectoryAnchor = AnchorEntity(world: [0,0,0])
@@ -55,7 +54,7 @@ class TrajectoryManager {
             logger.error("Notification's data did not match expected value")
             return
         }
-        
+
         guard let levelName = localizationData["levelName"] else {
             logger.error("No level name in dict: \(localizationData)")
             return
@@ -79,12 +78,34 @@ class TrajectoryManager {
         let trajectoryReq = TrajectoryRequest(mapName: levelName, duration: 500, trim: false)
         
         networkManager.sendWebSocketRequest(webSocketConnection: connection, requestBody: trajectoryReq, responseBodyType: TrajectoryResponse.self) {
-            trajectoryResponse in
+            trajectoryResponseResult in
+            
+            var trajectoryResponse: TrajectoryResponse
+            
+            // Check network was succesful
+            switch trajectoryResponseResult {
+            case .success(let data):
+                trajectoryResponse = data
+            case .failure(let e):
+                self.logger.error("\(e.localizedDescription)")
+                return
+            }
             
             self.networkManager.sendWebSocketRequest(webSocketConnection: connection, requestBody: TimeRequest(), responseBodyType: TimeResponse.self) {
-                timeRes in
+                timeResponseResult in
                 
-                guard let currentTimeInNanoseconds = timeRes.values.first else {
+                var timeResponse: TimeResponse
+                
+                // Check network was succesful
+                switch timeResponseResult {
+                case .success(let data):
+                    timeResponse = data
+                case .failure(let e):
+                    self.logger.error("\(e.localizedDescription)")
+                    return
+                }
+                
+                guard let currentTimeInNanoseconds = timeResponse.values.first else {
                     self.logger.error("No time received in response from server")
                     return
                 }

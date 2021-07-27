@@ -9,10 +9,9 @@ import Foundation
 import ARKit
 import RealityKit
 import Combine
+import os
 
 class BuildingMapManager {
-    
-    let BUILDING_MAP_URL = "http://192.168.1.201:8080/building_map"
     
     var arView: ARView
     
@@ -21,6 +20,8 @@ class BuildingMapManager {
     var networkManager: NetworkManager
     
     var cancellables: Set<AnyCancellable> = []
+    
+    let logger = Logger(subsystem: Bundle.main.bundleIdentifier!, category: "BuildingMapManager")
     
     init(arView: ARView, networkManager: NetworkManager) {
         self.arView = arView
@@ -32,35 +33,45 @@ class BuildingMapManager {
     }
     
     func downloadBuildingMap() {
-        self.networkManager.sendGetRequest(urlString: BUILDING_MAP_URL, responseBodyType: BuildingMap.self) {
-            model in
+        self.networkManager.sendGetRequest(urlString: URLConstants.BUILDING_MAP, responseBodyType: BuildingMap.self) {
+            responseResult in
             
-            self.buildingMap = model
+            // Check network was succesful
+            switch responseResult {
+            case .success(let buildingMap):
+                self.buildingMap = buildingMap
+            case .failure(let e):
+                self.logger.error("\(e.localizedDescription)")
+                
+                // Retry download in 2 seconds
+                DispatchQueue.global().asyncAfter(deadline: .now() + .seconds(2)) {
+                    self.downloadBuildingMap()
+                }
+            }
         }
     }
     
     @objc func visualizeMap(_ notification: Notification) {        
         guard let localizationData = notification.userInfo as? [String: String] else {
-            print("ERROR: Notification \(notification.name)'s user info did not match expected value")
+            logger.error("Notification \(notification.name.rawValue)'s user info did not match expected value")
             return
         }
         
         guard let levelName = localizationData["levelName"] else {
-            print("ERROR: No level name in dict: \(localizationData)")
+            logger.error("No level name in dict: \(localizationData)")
             return
         }
         
         guard self.buildingMap != nil else {
-            print("ERROR: No building map available - no visualization possible")
+            logger.error("No building map available - no visualization possible")
             return
         }
+        
         guard let currentLevel = self.buildingMap?.levels.first(where: {$0.name == levelName}) else {
-            print("ERROR: No level with name \(levelName) found")
+            logger.error("No level with name \(levelName) found")
             return
         }
         
-        
-
         // Any drawing must be done on the main thread
         DispatchQueue.main.async {
             // Create an anchor for the building map

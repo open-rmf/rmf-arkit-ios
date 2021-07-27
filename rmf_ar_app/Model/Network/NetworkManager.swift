@@ -10,56 +10,60 @@ import os
 
 class NetworkManager {
     
-    let logger = Logger(subsystem: Bundle.main.bundleIdentifier!, category: "NetworkManager")
+    var session: URLSession
+    
+    init() {
+        let configuration = URLSessionConfiguration.default
+        
+        configuration.timeoutIntervalForResource = 5
+        
+        session = URLSession(configuration: configuration)
+    }
     
     // MARK: - REST Methods
-    func sendGetRequest<T: Decodable>(urlString: String, responseBodyType: T.Type, completionHandler: @escaping (T) -> Void) {
+    func sendGetRequest<T: Decodable>(urlString: String, responseBodyType: T.Type, completionHandler: @escaping (Result<T, NetworkManagerError>) -> Void) {
         guard let url = URL(string: urlString) else {
-            logger.error("Invalid URL: \(urlString)")
+            completionHandler(.failure(.URLInvalid(urlString)))
             return
         }
         
-        let task = URLSession.shared.dataTask(with: url) { data, response, error in
-            guard let responseData = self.handleDataTaskResponse(data: data, response: response, error: error) else {
-                return
-            }
+        let task = session.dataTask(with: url) { data, response, error in
             
-            // Run completionHandler only if successfully decoded
-            if let responseBody = self.decodeJSON(from: responseData, to: responseBodyType) {
-                completionHandler(responseBody)
-            }
+            let responseResult = self.handleDataTaskResponse(data: data, response: response, error: error, responseBodyType: responseBodyType)
+            
+            completionHandler(responseResult)
         }
         
         task.resume()
     }
     
-    func sendPostRequest<T: Encodable, U: Decodable>(urlString: String, requestBody: T, responseBodyType: U.Type, completionHandler: @escaping (U) -> Void) {
+    func sendPostRequest<T: Encodable, U: Decodable>(urlString: String, requestBody: T, responseBodyType: U.Type, completionHandler: @escaping (Result<U, NetworkManagerError>) -> Void) {
         
         guard let url = URL(string: urlString) else {
-            logger.error("Invalid URL: \(urlString)")
             return
         }
         
-        guard let requestData = self.encodeJSON(from: requestBody) else {
-            return
-        }
-        
-        // Timeout after 1 minute
-        var urlRequest = URLRequest(url: url, timeoutInterval: 60)
+        // Setup urlRequest with a timeout of 20 seconds
+        var urlRequest = URLRequest(url: url, timeoutInterval: 20)
         urlRequest.httpMethod = "POST"
-        urlRequest.httpBody = requestData
         urlRequest.setValue("application/json; charset=utf-8", forHTTPHeaderField: "Content-Type")
         urlRequest.setValue("application/json; charset=utf-8", forHTTPHeaderField: "Accept")
         
-        let task = URLSession.shared.dataTask(with: urlRequest) { data, response, error in
-            guard let responseData = self.handleDataTaskResponse(data: data, response: response, error: error) else {
-                return
-            }
+        // Encode data
+        let encodeResult = self.encodeJSON(from: requestBody)
+        
+        switch encodeResult {
+        case .success(let requestData):
+            urlRequest.httpBody = requestData
+        case .failure(let e):
+            completionHandler(.failure(e))
+            return
+        }
+        
+        let task = session.dataTask(with: urlRequest) { data, response, error in
+            let responseResult = self.handleDataTaskResponse(data: data, response: response, error: error, responseBodyType: responseBodyType)
             
-            // Run completionHandler only if successfully decoded
-            if let responseBody = self.decodeJSON(from: responseData, to: responseBodyType) {
-                completionHandler(responseBody)
-            }
+            completionHandler(responseResult)
         }
         
         task.resume()
@@ -69,11 +73,10 @@ class NetworkManager {
     // MARK: - Web Socket Methods
     func openWebSocketConnection(urlString: String) -> URLSessionWebSocketTask? {
         guard let url = URL(string: urlString) else {
-            logger.error("Invalid URL: \(urlString)")
             return nil
         }
         
-        let webSocketTask = URLSession.shared.webSocketTask(with: url)
+        let webSocketTask = session.webSocketTask(with: url)
         webSocketTask.resume()
         
         return webSocketTask
@@ -84,19 +87,25 @@ class NetworkManager {
         webSocketConnection.cancel(with: .normalClosure, reason: reason)
     }
     
-    func sendWebSocketRequest<T: Encodable, U: Decodable>(webSocketConnection: URLSessionWebSocketTask, requestBody: T, responseBodyType: U.Type, completionHandler: @escaping (U) -> Void) {
+    func sendWebSocketRequest<T: Encodable, U: Decodable>(webSocketConnection: URLSessionWebSocketTask, requestBody: T, responseBodyType: U.Type, completionHandler: @escaping (Result<U, NetworkManagerError>) -> Void) {
         
-        guard let requestData = self.encodeJSON(from: requestBody) else {
+        let encodeResult = self.encodeJSON(from: requestBody)
+        var webSocketData: URLSessionWebSocketTask.Message
+        
+        switch encodeResult {
+        case .success(let requestData):
+            webSocketData = URLSessionWebSocketTask.Message.data(requestData)
+        case .failure(let e):
+            completionHandler(.failure(e))
             return
         }
-        
-        let webSocketData = URLSessionWebSocketTask.Message.data(requestData)
         
         webSocketConnection.send(webSocketData) {
             error in
             
             if let error = error {
-                self.logger.error("\(error.localizedDescription)")
+                let msg = self.handleClientError(clientError: error)
+                completionHandler(.failure(.ClientError(msg)))
             }
         }
         
@@ -105,101 +114,98 @@ class NetworkManager {
             
             switch result {
             case .success(let response):
-                // Response can either be as data or as
+                // Response can either be as data or as string
                 switch response {
                 case .data(let data):
-                    if let responseBody = self.decodeJSON(from: data, to: responseBodyType) {
-                        completionHandler(responseBody)
-                    }
+                    let decodeResult = self.decodeJSON(from: data, to: responseBodyType)
+                    completionHandler(decodeResult)
 
                 case .string(let text):
-                    if let responseBody = self.decodeJSON(from: text.data(using: .utf8)!, to: responseBodyType) {
-                        completionHandler(responseBody)
-                    }
+                    let decodeResult = self.decodeJSON(from: text.data(using: .utf8)!, to: responseBodyType)
+                    completionHandler(decodeResult)
                 @unknown default:
                     // Should never happen unless URLSessionWebSocketTask.Message type is changed
                     fatalError()
                 }
                 
             case .failure(let error):
-                self.logger.error("\(error.localizedDescription)")
+                completionHandler(.failure(.ServerError(error.localizedDescription)))
             }
         }
     }
     
     // MARK: - Private Methods
-    private func handleDataTaskResponse(data: Data?, response: URLResponse?, error: Error?) -> Data? {
+    private func handleDataTaskResponse<T: Decodable>(data: Data?, response: URLResponse?, error: Error?, responseBodyType: T.Type) -> Result<T, NetworkManagerError> {
         if let error = error {
-            handleClientError(clientError: error)
-            return nil
+            let msg = handleClientError(clientError: error)
+            return .failure(.ClientError(msg))
         }
 
         guard let httpResponse = response as? HTTPURLResponse,
               (200...299).contains(httpResponse.statusCode) else {
-            handleServerError(serverResponse: response)
-            return nil
+            let msg = handleServerError(serverResponse: response)
+            return .failure(.ServerError(msg))
         }
         
         guard let data = data else {
-            logger.error("No data received")
-            return nil
+            return .failure(.ServerError("No data received"))
         }
         
-        return data
+        return self.decodeJSON(from: data, to: responseBodyType)
     }
     
-    private func handleClientError(clientError: Error) {
-        logger.error("Client Error - \(clientError.localizedDescription)")
+    private func handleClientError(clientError: Error) -> String {
+        return clientError.localizedDescription
     }
     
-    private func handleServerError(serverResponse: URLResponse?) {
+    private func handleServerError(serverResponse: URLResponse?) -> String {
         guard let httpResponse = serverResponse as? HTTPURLResponse else {
-            logger.error("Server Error - Server Response not a HTTP response")
-            return
+            return "Server Response not a HTTP response"
         }
         
-        logger.error("Server Error - Status Code: \(httpResponse.statusCode)")
+        return "Status Code: \(httpResponse.statusCode)"
     }
     
-    private func decodeJSON<T: Decodable>(from data: Data, to decodeType: T.Type) -> T? {
+    private func decodeJSON<T: Decodable>(from data: Data, to decodeType: T.Type) -> Result<T, NetworkManagerError> {
+        
+        var msg = "Type: \(decodeType) | "
+        
         do {
             let decoder = JSONDecoder()
             decoder.keyDecodingStrategy = .convertFromSnakeCase
             
-            return try decoder.decode(decodeType, from: data)
+            return .success(try decoder.decode(decodeType, from: data))
             
         } catch let DecodingError.dataCorrupted(context) {
-            logger.error("\(context.debugDescription)")
+            msg = "\(context.debugDescription)"
         } catch let DecodingError.keyNotFound(key, context) {
-            logger.error("Key '\(key.stringValue)' not found: \(context.debugDescription)")
-            logger.error("codingPath: \(context.codingPath.description)")
+            msg = "Key '\(key.stringValue)' not found: \(context.debugDescription) | codingPath: \(context.codingPath.description)"
         } catch let DecodingError.valueNotFound(value, context) {
-            logger.error("Value '\(value)' not found: \(context.debugDescription)")
-            logger.error("codingPath: \(context.codingPath)")
+            msg = "Value '\(value)' not found: \(context.debugDescription) | codingPath: \(context.codingPath)"
         } catch let DecodingError.typeMismatch(type, context)  {
-            logger.error("Type '\(String(describing: type))' mismatch: \(context.debugDescription)")
-            logger.error("codingPath:\(context.codingPath.description)")
+            msg = "Type '\(String(describing: type))' mismatch: \(context.debugDescription) | codingPath:\(context.codingPath.description)"
         } catch {
-            logger.error("JSON Decode error: \(error.localizedDescription)")
+            msg = "JSON Decode error: \(error.localizedDescription)"
         }
         
-        logger.error("Error occured for Type: \(decodeType)")
-        
-        return nil
+        return .failure(.DecodeError(msg))
     }
     
-    private func encodeJSON<T: Encodable>(from encodedData: T) -> Data? {
+    private func encodeJSON<T: Encodable>(from encodedData: T) -> Result<Data, NetworkManagerError> {
+        
+        var msg = ""
+        
         do {
             let jsonEncoder = JSONEncoder()
             jsonEncoder.keyEncodingStrategy = .convertToSnakeCase
-            return try jsonEncoder.encode(encodedData)
+            return .success(try jsonEncoder.encode(encodedData))
         } catch let EncodingError.invalidValue(type, context) {
-            logger.error("Type '\(String(describing: type))' mismatch: \(context.debugDescription)")
+            msg = "Type '\(String(describing: type))' mismatch: \(context.debugDescription)"
         } catch {
-            logger.error("JSON Encode error: \(error.localizedDescription)")
+            msg = "JSON Encode error: \(error.localizedDescription)"
         }
         
-        return nil
+        return .failure(.EncodeError(msg))
     }
     
 }

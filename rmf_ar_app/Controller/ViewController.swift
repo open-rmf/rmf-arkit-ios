@@ -53,8 +53,7 @@ class ViewController: UIViewController, ARSessionDelegate {
         
         configuration.environmentTexturing = .automatic
         
-        arView.session.run(configuration, options: [])
-        
+        arView.session.run(configuration, options: [])        
     }
     
     func session(_ session: ARSession, didAdd anchors: [ARAnchor]) {
