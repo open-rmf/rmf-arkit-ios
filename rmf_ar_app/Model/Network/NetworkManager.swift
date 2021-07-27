@@ -183,6 +183,8 @@ class NetworkManager {
             logger.error("JSON Decode error: \(error.localizedDescription)")
         }
         
+        logger.error("Error occured for Type: \(decodeType)")
+        
         return nil
     }
     
