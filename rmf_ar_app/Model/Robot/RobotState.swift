@@ -8,9 +8,10 @@
 import Foundation
 
 struct TrackedRobot {
-    let robotState: RobotState
+    var robotState: RobotState
     var isTracked: Bool
     var lastSeen: Double?
+    var isVisualized: Bool
 }
 
 struct RobotState: Decodable {

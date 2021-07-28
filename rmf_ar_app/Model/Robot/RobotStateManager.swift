@@ -51,28 +51,35 @@ class RobotStateManager {
         
         let tagName = imageAnchor.name!
         
-        guard var robot = robots[tagName] else {
+        guard let robot = robots[tagName] else {
             logger.error("Robot with name: \(tagName) not found")
             return
         }
         
-        if !robot.isTracked {
+        if !robot.isVisualized {
             // Robot not seen before so create the necessary UI for it
             
             // Create a copy of the UI for robots
             let uiEntity = self.robotUIAsset.clone(recursive: true)
             
-            // TODO: Add an occlusion material so we dont see the panel from behind
             let sceneAnchor = AnchorEntity.init(anchor: imageAnchor)
             sceneAnchor.name = tagName
+            
+            // TODO: Add an occlusion material so we dont see the panel from behind
 
             sceneAnchor.addChild(uiEntity)
             self.arView.scene.addAnchor(sceneAnchor)
+            
+            robots[tagName]!.isVisualized = true
         }
         
-        robot.lastSeen = NSDate().timeIntervalSince1970
-        robot.isTracked = true
-        robots[tagName] = robot
+        // Check if ARKit is actively tracking the associated marker
+        if imageAnchor.isTracked {
+            robots[tagName]!.lastSeen = NSDate().timeIntervalSince1970
+            robots[tagName]!.isTracked = true
+        } else {
+            robots[tagName]!.isTracked = false
+        }
     }
     
     @objc func updateRobotStates() {
@@ -92,12 +99,11 @@ class RobotStateManager {
             
             for state in robotStatesList {
                 
+                // Update robot state if its in our list, otherwise create a new entry
                 if self.robots.contains(where: {key, _ in key == state.robotName}) {
-                    let currentData = self.robots[state.robotName]!
-                    let updatedData = TrackedRobot(robotState: state, isTracked: currentData.isTracked, lastSeen: currentData.lastSeen)
-                    self.robots[state.robotName] = updatedData
+                    self.robots[state.robotName]!.robotState = state
                 } else {
-                    self.robots[state.robotName] = TrackedRobot(robotState: state, isTracked: false, lastSeen: nil)
+                    self.robots[state.robotName] = TrackedRobot(robotState: state, isTracked: false, lastSeen: nil, isVisualized: false)
                 }
             }
             
