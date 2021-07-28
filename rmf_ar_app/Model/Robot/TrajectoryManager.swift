@@ -75,9 +75,9 @@ class TrajectoryManager {
             return
         }
         
-        let trajectoryReq = TrajectoryRequest(mapName: levelName, duration: 500, trim: false)
+        let trajectoryRequest = TrajectoryRequest(mapName: levelName, duration: 5000, trim: false)
         
-        networkManager.sendWebSocketRequest(webSocketConnection: connection, requestBody: trajectoryReq, responseBodyType: TrajectoryResponse.self) {
+        networkManager.sendWebSocketRequest(webSocketConnection: connection, requestBody: trajectoryRequest, responseBodyType: TrajectoryResponse.self) {
             trajectoryResponseResult in
             
             var trajectoryResponse: TrajectoryResponse
