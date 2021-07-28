@@ -7,6 +7,7 @@
 
 import Foundation
 import Combine
+import ARKit
 import RealityKit
 
 class RobotTagLocalizer {
@@ -29,6 +30,15 @@ class RobotTagLocalizer {
             return
         }
         
+        // Only localize if tracking state is good
+        switch arView.session.currentFrame?.camera.trackingState {
+        case .normal:
+            print("Tracking state normal")
+        default:
+            print("Tracking state: \((arView.session.currentFrame?.camera.trackingState)!) - Aborting localization")
+            return
+        }
+        
         guard let trackedRobotsDict = notification.userInfo as? [String: TrackedRobot] else {
             print("ERROR: Notification \(notification.name)'s user info did not match expected value")
             return
@@ -40,7 +50,7 @@ class RobotTagLocalizer {
         })
         
         if !(sortedRobots.first?.isTracked ?? false) {
-            print("INFO: No Robot tracked yet")
+            print("INFO: No tracked robots")
             return
         }
         
