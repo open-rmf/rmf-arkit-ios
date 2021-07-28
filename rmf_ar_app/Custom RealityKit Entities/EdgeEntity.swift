@@ -11,9 +11,6 @@ import ARKit
 
 class EdgeEntity: Entity, HasModel {
     
-    let EDGE_WIDTH: Float = 0.1
-    let Z_OFFSET: Float = 0.5
-    
     // Default constructor is required
     required init() {
         super.init()
@@ -29,8 +26,8 @@ class EdgeEntity: Entity, HasModel {
         let zAxisRotation = atan2(directionVec.y, directionVec.x)
         let edgeRotation = simd_quatf(angle: zAxisRotation, axis: [0,0,1])
         
-        self.components[ModelComponent] = ModelComponent(mesh: .generatePlane(width: edgeLength, height: self.EDGE_WIDTH), materials: [UnlitMaterial(color: color)])
+        self.components[ModelComponent] = ModelComponent(mesh: .generatePlane(width: edgeLength, height: ARConstants.NavGraph.EDGE_WIDTH), materials: [UnlitMaterial(color: color)])
         
-        self.components[Transform] = Transform(scale: [1,1,1], rotation: edgeRotation, translation: [midpoint.x, midpoint.y, self.Z_OFFSET])
+        self.components[Transform] = Transform(scale: [1,1,1], rotation: edgeRotation, translation: [midpoint.x, midpoint.y, ARConstants.NavGraph.Z_OFFSET])
     }
 }

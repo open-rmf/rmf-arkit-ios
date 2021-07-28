@@ -10,6 +10,7 @@
 		3009E4442683082600A3D262 /* EdgeEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3009E4432683082600A3D262 /* EdgeEntity.swift */; };
 		3009E449268322C400A3D262 /* VertexEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3009E448268322C400A3D262 /* VertexEntity.swift */; };
 		3011B531267C393500D17FD9 /* NetworkManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3011B530267C393500D17FD9 /* NetworkManager.swift */; };
+		3042040026B11AD60065AB7F /* ARConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 304203FF26B11AD60065AB7F /* ARConstants.swift */; };
 		306C448D2694478700386D11 /* TaskCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 306C448C2694478700386D11 /* TaskCell.swift */; };
 		306C448F2694489300386D11 /* TaskManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 306C448E2694489300386D11 /* TaskManager.swift */; };
 		306C449226944E4400386D11 /* Task.swift in Sources */ = {isa = PBXBuildFile; fileRef = 306C449126944E4400386D11 /* Task.swift */; };
@@ -59,6 +60,7 @@
 		3009E4432683082600A3D262 /* EdgeEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EdgeEntity.swift; sourceTree = "<group>"; };
 		3009E448268322C400A3D262 /* VertexEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VertexEntity.swift; sourceTree = "<group>"; };
 		3011B530267C393500D17FD9 /* NetworkManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkManager.swift; sourceTree = "<group>"; };
+		304203FF26B11AD60065AB7F /* ARConstants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ARConstants.swift; sourceTree = "<group>"; };
 		306C448C2694478700386D11 /* TaskCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskCell.swift; sourceTree = "<group>"; };
 		306C448E2694489300386D11 /* TaskManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskManager.swift; sourceTree = "<group>"; };
 		306C449126944E4400386D11 /* Task.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Task.swift; sourceTree = "<group>"; };
@@ -254,6 +256,7 @@
 				30B231F7267B5B6B00265D9A /* ARAssets.rcproject */,
 				30AA759E267A1B3700D56B99 /* Assets.xcassets */,
 				307FE3DA26AFA5760083180A /* URLConstants.swift */,
+				304203FF26B11AD60065AB7F /* ARConstants.swift */,
 			);
 			path = Resources;
 			sourceTree = "<group>";
@@ -395,6 +398,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3042040026B11AD60065AB7F /* ARConstants.swift in Sources */,
 				308BEB822685D71C00757DC1 /* WallEntity.swift in Sources */,
 				308C0DF3267B217D0077C844 /* RobotState.swift in Sources */,
 				30D39D3A267CA90A00C92D8D /* BuilldingMap.swift in Sources */,

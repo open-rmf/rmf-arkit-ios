@@ -11,10 +11,6 @@ import UIKit
 
 class TrajectoryEntity: Entity {
     
-    static let Z_OFFSET: Float = 0.8
-    let MESH_WIDTH: Float = 0.05
-    let HEIGHT_LEVEL_STEP: Float = 0.1
-    
     var segments: [ModelEntity] = []
     
     required init() {
@@ -55,9 +51,9 @@ class TrajectoryEntity: Entity {
         let theta = atan2(directionVec.y, directionVec.x)
         let edgeRotation = simd_quatf(angle: theta, axis: [0,0,1])
         
-        let pathModel = ModelEntity(mesh: .generateBox(width: edgeLength, height: MESH_WIDTH, depth: MESH_WIDTH), materials: [SimpleMaterial(color: color, roughness: 1.0, isMetallic: false)])
+        let pathModel = ModelEntity(mesh: .generateBox(width: edgeLength, height: ARConstants.Trajectory.PATH_SIZE, depth: ARConstants.Trajectory.PATH_SIZE), materials: [SimpleMaterial(color: color, roughness: 1.0, isMetallic: false)])
         
-        let z = TrajectoryEntity.Z_OFFSET + Float(heightLevel) * HEIGHT_LEVEL_STEP
+        let z = ARConstants.Trajectory.Z_OFFSET + Float(heightLevel) * ARConstants.Trajectory.HEIGHT_LEVEL_STEP
         
         pathModel.components[Transform] = Transform(scale: [1,1,1], rotation: edgeRotation, translation: [midpoint.x, midpoint.y, z])
         
