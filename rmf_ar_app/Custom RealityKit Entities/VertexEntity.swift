@@ -11,8 +11,6 @@ import ARKit
 
 class VertexEntity: Entity, HasModel {
     
-    private let NODE_Z_OFFSET: Float = 0.5
-    private let TEXT_Z_OFFSET: Float = 0.5
     var hasText = false
     
     // Default constructor is required
@@ -24,9 +22,9 @@ class VertexEntity: Entity, HasModel {
         super.init()
         
         let nodeMaterial = SimpleMaterial(color: .white, isMetallic: false)
-        let nodeMesh = MeshResource.generateBox(size: 0.1)
+        let nodeMesh = MeshResource.generateBox(size: ARConstants.NavGraph.VERTEX_SIZE)
         
-        let nodeTranslation = simd_float3([vertex.x, vertex.y, NODE_Z_OFFSET])
+        let nodeTranslation = simd_float3([vertex.x, vertex.y, ARConstants.NavGraph.Z_OFFSET])
         
         self.components[ModelComponent] = ModelComponent(mesh: nodeMesh, materials: [nodeMaterial])
         self.components[Transform] = Transform(scale: [1,1,1], rotation: simd_quatf(), translation: nodeTranslation)
@@ -38,10 +36,10 @@ class VertexEntity: Entity, HasModel {
             self.hasText = true
             
             let textMaterial = UnlitMaterial(color: .white)
-            let textMesh = MeshResource.generateText(vertex.name, extrusionDepth: 0.01, font: .init(name: "Helvetica", size: 0.1)!)
-            let textTranslation = simd_float3([0, 0, TEXT_Z_OFFSET]) // Translation is relative to parent
+            let textMesh = MeshResource.generateText(vertex.name, extrusionDepth: 0.01, font: .init(name: "Helvetica", size: CGFloat(ARConstants.NavGraph.TEXT_FONT_SIZE))!)
+            let textTranslation = simd_float3([0, 0, ARConstants.NavGraph.TEXT_Z_OFFSET]) // Translation is relative to parent
             
-            let textEntity = ModelEntity(mesh: textMesh, materials: [textMaterial])
+            let textEntity = ModelEntity(mesh: textMesh, materials: [textMaterial])	
             textEntity.transform = Transform(scale: [1,1,1], rotation: simd_quatf(), translation: textTranslation)
             textEntity.name = "\(vertex.name)Text"
             self.addChild(textEntity)
