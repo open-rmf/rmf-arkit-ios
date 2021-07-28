@@ -43,8 +43,8 @@ class NetworkManager {
             return
         }
         
-        // Setup urlRequest with a timeout of 20 seconds
-        var urlRequest = URLRequest(url: url, timeoutInterval: 20)
+        // Setup urlRequest
+        var urlRequest = URLRequest(url: url)
         urlRequest.httpMethod = "POST"
         urlRequest.setValue("application/json; charset=utf-8", forHTTPHeaderField: "Content-Type")
         urlRequest.setValue("application/json; charset=utf-8", forHTTPHeaderField: "Accept")
@@ -76,7 +76,8 @@ class NetworkManager {
             return nil
         }
         
-        let webSocketTask = session.webSocketTask(with: url)
+        // Using the configured session does not work for some reason...
+        let webSocketTask = URLSession.shared.webSocketTask(with: url)
         webSocketTask.resume()
         
         return webSocketTask
@@ -168,7 +169,7 @@ class NetworkManager {
     
     private func decodeJSON<T: Decodable>(from data: Data, to decodeType: T.Type) -> Result<T, NetworkManagerError> {
         
-        var msg = "Type: \(decodeType) | "
+        var msg = "DecodeType: \(decodeType) | "
         
         do {
             let decoder = JSONDecoder()
@@ -177,15 +178,15 @@ class NetworkManager {
             return .success(try decoder.decode(decodeType, from: data))
             
         } catch let DecodingError.dataCorrupted(context) {
-            msg = "\(context.debugDescription)"
+            msg += "\(context.debugDescription)"
         } catch let DecodingError.keyNotFound(key, context) {
-            msg = "Key '\(key.stringValue)' not found: \(context.debugDescription) | codingPath: \(context.codingPath.description)"
+            msg += "Key '\(key.stringValue)' not found: \(context.debugDescription) | codingPath: \(context.codingPath.description)"
         } catch let DecodingError.valueNotFound(value, context) {
-            msg = "Value '\(value)' not found: \(context.debugDescription) | codingPath: \(context.codingPath)"
+            msg += "Value '\(value)' not found: \(context.debugDescription) | codingPath: \(context.codingPath)"
         } catch let DecodingError.typeMismatch(type, context)  {
-            msg = "Type '\(String(describing: type))' mismatch: \(context.debugDescription) | codingPath:\(context.codingPath.description)"
+            msg += "Type '\(String(describing: type))' mismatch: \(context.debugDescription) | codingPath:\(context.codingPath.description)"
         } catch {
-            msg = "JSON Decode error: \(error.localizedDescription)"
+            msg += "JSON Decode error: \(error.localizedDescription)"
         }
         
         return .failure(.DecodeError(msg))
