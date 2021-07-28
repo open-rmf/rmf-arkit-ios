@@ -9,7 +9,7 @@ import Foundation
 import RealityKit
 import UIKit
 
-class TrajectoryEntity: Entity, HasCollision {
+class TrajectoryEntity: Entity {
     
     static let Z_OFFSET: Float = 0.8
     let MESH_WIDTH: Float = 0.05
@@ -60,9 +60,6 @@ class TrajectoryEntity: Entity, HasCollision {
         let z = TrajectoryEntity.Z_OFFSET + Float(heightLevel) * HEIGHT_LEVEL_STEP
         
         pathModel.components[Transform] = Transform(scale: [1,1,1], rotation: edgeRotation, translation: [midpoint.x, midpoint.y, z])
-    
-        pathModel.generateCollisionShapes(recursive: true)
-        
         
         self.addChild(pathModel, preservingWorldTransform: false)
     }
