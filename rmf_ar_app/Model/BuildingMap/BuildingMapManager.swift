@@ -16,6 +16,7 @@ class BuildingMapManager {
     var arView: ARView
     
     var buildingMap: BuildingMap?
+    var isVisualized: Bool = false
     
     var networkManager: NetworkManager
     
@@ -51,7 +52,13 @@ class BuildingMapManager {
         }
     }
     
-    @objc func visualizeMap(_ notification: Notification) {        
+    @objc func visualizeMap(_ notification: Notification) {
+        
+        if isVisualized {
+            logger.debug("Map already visualized. Skipping")
+            return
+        }
+        
         guard let localizationData = notification.userInfo as? [String: String] else {
             logger.error("Notification \(notification.name.rawValue)'s user info did not match expected value")
             return
@@ -84,6 +91,8 @@ class BuildingMapManager {
             // Finally add the building map to the scene
             self.arView.scene.addAnchor(buildingMapAnchor)
         }
+        
+        isVisualized = true
     }
 
     func addNavGraphs(fromLevel level: Level, toEntity parentEntity: Entity){
@@ -130,15 +139,13 @@ class BuildingMapManager {
             let v1 = navGraph.vertices[edge.v1Idx]
             let v2 = navGraph.vertices[edge.v2Idx]
                        
-            let edge = EdgeEntity(vertex1: v1, vertex2: v2, color: .cyan)
+            let edge = EdgeEntity(vertex1: v1, vertex2: v2)
             
             parentEntity.addChild(edge)
         }
     }
     
     func addWallGraph(fromLevel level: Level, toEntity parentEntity: Entity) {
-        
-        return
         
         let wallGraphEntity = Entity()
         wallGraphEntity.name = "wall_graph"
