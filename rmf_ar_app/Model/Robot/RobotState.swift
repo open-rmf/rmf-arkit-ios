@@ -10,8 +10,7 @@ import Foundation
 struct TrackedRobot {
     var robotState: RobotState
     var isTracked: Bool
-    var lastSeen: Double?
-    var isVisualized: Bool
+    var lastSeen = Date.distantPast
 }
 
 struct RobotState: Decodable {
