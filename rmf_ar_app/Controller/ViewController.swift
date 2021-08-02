@@ -45,7 +45,7 @@ class ViewController: UIViewController {
         arView.session.delegate = self
         
         // Debugging options
-        arView.debugOptions = ARView.DebugOptions([.showStatistics, .showWorldOrigin])
+//        arView.debugOptions = ARView.DebugOptions([.showStatistics, .showWorldOrigin, .showAnchorOrigins])
         
         // Setup AR configuration
         let configuration = ARWorldTrackingConfiguration()
@@ -56,12 +56,12 @@ class ViewController: UIViewController {
         }
         
         configuration.detectionImages = referenceImages
-        configuration.maximumNumberOfTrackedImages = 1
+        configuration.maximumNumberOfTrackedImages = 5
     
         
         configuration.environmentTexturing = .automatic
         
-        arView.session.run(configuration, options: [])        
+        arView.session.run(configuration, options: [.resetTracking, .removeExistingAnchors])        
     }
     
     @IBAction func taskMenuButtonTapped(_ sender: Any) {
