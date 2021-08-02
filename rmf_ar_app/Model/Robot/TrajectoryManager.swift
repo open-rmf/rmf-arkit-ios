@@ -12,9 +12,6 @@ import RealityKit
 
 class TrajectoryManager {
     
-    let NO_COLLISION_COLOR = UIColor.green
-    let COLLISION_COLOR = UIColor.red
-    
     var networkManager: NetworkManager
     var webSocketConnection: URLSessionWebSocketTask?
     
@@ -37,14 +34,17 @@ class TrajectoryManager {
         trajectoryAnchor = AnchorEntity(world: [0,0,0])
         arView.scene.addAnchor(trajectoryAnchor)
         
-        // Setup the timer
-        self.downloadTimer = Timer(timeInterval: 1.0, target: self, selector: #selector(updateTrajectories), userInfo: nil, repeats: true)
-        
-        // Add some tolerance to reduce computational load
-        self.downloadTimer.tolerance = 0.2
-        
-        // Start timer
-        RunLoop.current.add(self.downloadTimer, forMode: .common)
+        DispatchQueue.global().async {
+            [weak self] in
+            
+            guard let self = self else { return }
+            
+            self.downloadTimer = Timer(timeInterval: (1 / ARConstants.Trajectory.DOWNLOAD_RATE), target: self, selector: #selector(self.updateTrajectories), userInfo: nil, repeats: true)
+            
+            let runLoop = RunLoop.current
+            runLoop.add(self.downloadTimer, forMode: .default)
+            runLoop.run()
+        }
         
         NotificationCenter.default.addObserver(self, selector: #selector(setLevelName), name: Notification.Name("setWorldOrigin"), object: nil)
     }
@@ -75,7 +75,7 @@ class TrajectoryManager {
             return
         }
         
-        let trajectoryRequest = TrajectoryRequest(mapName: levelName, duration: 5000, trim: false)
+        let trajectoryRequest = TrajectoryRequest(mapName: levelName, duration: 60000, trim: true)
         
         networkManager.sendWebSocketRequest(webSocketConnection: connection, requestBody: trajectoryRequest, responseBodyType: TrajectoryResponse.self) {
             trajectoryResponseResult in
@@ -91,38 +91,14 @@ class TrajectoryManager {
                 return
             }
             
-            self.networkManager.sendWebSocketRequest(webSocketConnection: connection, requestBody: TimeRequest(), responseBodyType: TimeResponse.self) {
-                timeResponseResult in
-                
-                var timeResponse: TimeResponse
-                
-                // Check network was succesful
-                switch timeResponseResult {
-                case .success(let data):
-                    timeResponse = data
-                case .failure(let e):
-                    self.logger.error("\(e.localizedDescription)")
-                    return
-                }
-                
-                guard let currentTimeInNanoseconds = timeResponse.values.first else {
-                    self.logger.error("No time received in response from server")
-                    return
-                }
-                
-                // Convert to milliseconds
-                let currentTime: Int = Int(round(Double(currentTimeInNanoseconds) / 1000000))
-                
-                // Any drawing must be done on main thread
-                DispatchQueue.main.async {
-                    self.visualizeTrajectories(trajectoryResponse: trajectoryResponse, currentTime: currentTime)
-                }
-                
+            // Any drawing must be done on main thread
+            DispatchQueue.main.async {
+                self.visualizeTrajectories(trajectoryResponse: trajectoryResponse)
             }
         }
     }
     
-    func visualizeTrajectories(trajectoryResponse trajectories: TrajectoryResponse, currentTime: Int) {
+    func visualizeTrajectories(trajectoryResponse trajectories: TrajectoryResponse) {
         self.clearPreviousTrajectories()
         
         // Sort trajectories by id
@@ -137,12 +113,15 @@ class TrajectoryManager {
                 continue
             }
             
-            let trajectoryColor = isConflicting(trajectory: trajectory, conflicts: trajectories.conflicts) ?  COLLISION_COLOR : NO_COLLISION_COLOR
+            let isCollision = isConflicting(trajectory: trajectory, conflicts: trajectories.conflicts)
             
+            // Checks if the trajectory overlaps with other seen trajectories and returns the level at which it should
+            // be displayed to prevent overlapping (overlapping trajectories make it difficult to tell which robot
+            // follows what)
             let heightLevel = getHeightLevel(trajectory: trajectory)
             
             // Add Trajectory
-            let trajEntity = TrajectoryEntity(trajectory: trajectory, currentTime: currentTime, color: trajectoryColor, heightLevel: heightLevel)
+            let trajEntity = TrajectoryEntity(trajectory: trajectory, isCollision: isCollision, heightLevel: heightLevel)
             trajectoryAnchor.addChild(trajEntity)
         }
     }
