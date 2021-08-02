@@ -11,6 +11,12 @@ import ARKit
 
 class VertexEntity: Entity, HasModel {
     
+    // Share meshes and materials where possible
+    static let NODE_MATERIAL = SimpleMaterial(color: .white.withAlphaComponent(0.6), isMetallic: false)
+    static let NODE_MESH = MeshResource.generateBox(size: ARConstants.NavGraph.VERTEX_SIZE)
+    static let TEXT_FONT = MeshResource.Font(name: "Helvetica", size: CGFloat(ARConstants.NavGraph.TEXT_FONT_SIZE))!
+    static let TEXT_MATERIAL = UnlitMaterial(color: .white)
+    
     var hasText = false
     
     // Default constructor is required
@@ -21,12 +27,9 @@ class VertexEntity: Entity, HasModel {
     required init(vertex: Vertex, index: Int) {
         super.init()
         
-        let nodeMaterial = SimpleMaterial(color: .white, isMetallic: false)
-        let nodeMesh = MeshResource.generateBox(size: ARConstants.NavGraph.VERTEX_SIZE)
-        
         let nodeTranslation = simd_float3([vertex.x, vertex.y, ARConstants.NavGraph.Z_OFFSET])
         
-        self.components[ModelComponent] = ModelComponent(mesh: nodeMesh, materials: [nodeMaterial])
+        self.components[ModelComponent] = ModelComponent(mesh: VertexEntity.NODE_MESH, materials: [VertexEntity.NODE_MATERIAL])
         self.components[Transform] = Transform(scale: [1,1,1], rotation: simd_quatf(), translation: nodeTranslation)
         
         self.name = "vertex\(index)"
@@ -35,11 +38,10 @@ class VertexEntity: Entity, HasModel {
         if vertex.name != "" {
             self.hasText = true
             
-            let textMaterial = UnlitMaterial(color: .white)
-            let textMesh = MeshResource.generateText(vertex.name, extrusionDepth: 0.01, font: .init(name: "Helvetica", size: CGFloat(ARConstants.NavGraph.TEXT_FONT_SIZE))!)
+            let textMesh = MeshResource.generateText(vertex.name, extrusionDepth: 0.01, font: VertexEntity.TEXT_FONT)
             let textTranslation = simd_float3([0, 0, ARConstants.NavGraph.TEXT_Z_OFFSET]) // Translation is relative to parent
             
-            let textEntity = ModelEntity(mesh: textMesh, materials: [textMaterial])	
+            let textEntity = ModelEntity(mesh: textMesh, materials: [VertexEntity.TEXT_MATERIAL])
             textEntity.transform = Transform(scale: [1,1,1], rotation: simd_quatf(), translation: textTranslation)
             textEntity.name = "\(vertex.name)Text"
             self.addChild(textEntity)

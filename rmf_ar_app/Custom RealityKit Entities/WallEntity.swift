@@ -10,6 +10,8 @@ import RealityKit
 
 class WallEntity: Entity, HasModel {
     
+    static let wallMaterial = OcclusionMaterial()
+    
     let WALL_HEIGHT: Float = 3
     
     // Default constructor is required
@@ -27,7 +29,7 @@ class WallEntity: Entity, HasModel {
         let zAxisRotation = atan2(directionVec.y, directionVec.x)
         let edgeRotation = simd_quatf(angle: zAxisRotation, axis: [0,0,1])
         
-        self.components[ModelComponent] = ModelComponent(mesh: .generatePlane(width: edgeLength, depth: WALL_HEIGHT), materials: [OcclusionMaterial()])
+        self.components[ModelComponent] = ModelComponent(mesh: .generatePlane(width: edgeLength, depth: WALL_HEIGHT), materials: [WallEntity.wallMaterial])
         
         self.components[Transform] = Transform(scale: [1,1,1], rotation: edgeRotation, translation: [midpoint.x, midpoint.y, 0.5])
     }
