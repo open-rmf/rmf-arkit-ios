@@ -7,7 +7,14 @@
 
 import Foundation
 
-class SettingsManager {
+class Settings {
     
+    // Singleton
+    static let shared = Settings()
+    
+    // Settings for app
+    
+    // Building Map settings
+    @Published var isWallsVisible = true
     
 }

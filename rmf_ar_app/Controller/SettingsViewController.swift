@@ -6,3 +6,23 @@
 //
 
 import Foundation
+import UIKit
+import Eureka
+
+
+class SettingsViewController: FormViewController {
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        
+        self.navigationItem.title = "Settings"
+        
+        form +++ Section("Building Map Settings")
+            <<< SwitchRow("ShowWalls") { row in
+                row.title = "Show walls"
+                row.value = Settings.shared.isWallsVisible
+            }
+            .onChange { row in
+                Settings.shared.isWallsVisible = row.value!
+            }
+    }
+}
