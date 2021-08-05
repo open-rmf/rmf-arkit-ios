@@ -14,6 +14,7 @@ import os
 class BuildingMapManager {
     
     var arView: ARView
+    var buildingMapAnchor: AnchorEntity
     
     var buildingMap: BuildingMap?
     var isVisualized: Bool = false
@@ -25,12 +26,20 @@ class BuildingMapManager {
     let logger = Logger(subsystem: Bundle.main.bundleIdentifier!, category: "BuildingMapManager")
     
     init(arView: ARView, networkManager: NetworkManager) {
-        self.arView = arView
         self.networkManager = networkManager
+        
+        self.arView = arView
+        buildingMapAnchor = AnchorEntity(world: [0,0,0])
+        arView.scene.addAnchor(buildingMapAnchor)
         
         self.downloadBuildingMap()
         
         NotificationCenter.default.addObserver(self, selector: #selector(visualizeMap), name: Notification.Name("setWorldOrigin"), object: nil)
+        
+        Settings.shared.$isWallsVisible.sink {
+            [weak self] isVisible in
+            self?.changeWallVisibility(isVisible: isVisible)
+        }.store(in: &cancellables)
     }
     
     func downloadBuildingMap() {
@@ -44,8 +53,12 @@ class BuildingMapManager {
             case .failure(let e):
                 self.logger.error("\(e.localizedDescription)")
                 
-                // Retry download in 2 seconds
+                // Retry download in 2 seconds if failed
                 DispatchQueue.global().asyncAfter(deadline: .now() + .seconds(2)) {
+                    [weak self] in
+                    
+                    guard let self = self else { return }
+                    
                     self.downloadBuildingMap()
                 }
             }
@@ -81,21 +94,18 @@ class BuildingMapManager {
         
         // Any drawing must be done on the main thread
         DispatchQueue.main.async {
-            // Create an anchor for the building map
-            let buildingMapAnchor = AnchorEntity(world: [0,0,0])
-            buildingMapAnchor.name = "buildingMap"
+            [weak self] in
             
-            self.addNavGraphs(fromLevel: currentLevel, toEntity: buildingMapAnchor)
-            self.addWallGraph(fromLevel: currentLevel, toEntity: buildingMapAnchor)
+            guard let self = self else { return }
             
-            // Finally add the building map to the scene
-            self.arView.scene.addAnchor(buildingMapAnchor)
+            self.addNavGraphs(fromLevel: currentLevel)
+            self.addWallGraph(fromLevel: currentLevel)
         }
         
         isVisualized = true
     }
 
-    func addNavGraphs(fromLevel level: Level, toEntity parentEntity: Entity){
+    func addNavGraphs(fromLevel level: Level){
         
         for navGraph in level.navGraphs {
             // Name the nav graph
@@ -105,7 +115,7 @@ class BuildingMapManager {
             addNavVertices(fromNavGraph: navGraph, toEntity: navGraphEntity)
             addNavEdges(fromNavGraph: navGraph, toEntity: navGraphEntity)
             
-            parentEntity.addChild(navGraphEntity)
+            buildingMapAnchor.addChild(navGraphEntity)
         }
         
     }
@@ -116,6 +126,7 @@ class BuildingMapManager {
         for (idx, vertex) in navGraph.vertices.enumerated() {
             let vertexEntity = VertexEntity(vertex: vertex, index: idx)
             
+            // Keep track of vertices with text
             if vertexEntity.hasText {
                 verticesWithText.append(vertexEntity)
             }
@@ -145,7 +156,7 @@ class BuildingMapManager {
         }
     }
     
-    func addWallGraph(fromLevel level: Level, toEntity parentEntity: Entity) {
+    func addWallGraph(fromLevel level: Level) {
         
         let wallGraphEntity = Entity()
         wallGraphEntity.name = "wall_graph"
@@ -159,6 +170,17 @@ class BuildingMapManager {
             wallGraphEntity.addChild(wall)
         }
         
-        parentEntity.addChild(wallGraphEntity)
+        wallGraphEntity.isEnabled = Settings.shared.isWallsVisible
+        
+        buildingMapAnchor.addChild(wallGraphEntity)
+    }
+    
+    func changeWallVisibility(isVisible: Bool) {
+        guard let wallGraphEntity = arView.scene.findEntity(named: "wall_graph") else {
+            logger.debug("No wall graph entity found. Cannot change visibility")
+            return
+        }
+        
+        wallGraphEntity.isEnabled = isVisible
     }
 }

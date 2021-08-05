@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="18122" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="BYZ-38-t0r">
-    <device id="retina6_5" orientation="portrait" appearance="light"/>
+    <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="18093"/>
         <capability name="Named colors" minToolsVersion="9.0"/>
@@ -35,32 +35,35 @@
                                     <action selector="taskMenuButtonTapped:" destination="BYZ-38-t0r" eventType="touchUpInside" id="OyG-f4-0F7"/>
                                 </connections>
                             </button>
-                            <button opaque="NO" userInteractionEnabled="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="8f3-qh-3rn">
-                                <rect key="frame" x="25" y="30" width="20" height="20"/>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="kVP-an-JBp">
+                                <rect key="frame" x="20" y="30" width="30" height="29.5"/>
                                 <constraints>
-                                    <constraint firstAttribute="width" constant="20" id="XvC-yh-Ulu"/>
-                                    <constraint firstAttribute="height" constant="20" id="YhL-Qo-zw9"/>
+                                    <constraint firstAttribute="height" constant="30" id="78C-vo-IPN"/>
+                                    <constraint firstAttribute="width" constant="30" id="Mzk-Rs-AqA"/>
                                 </constraints>
+                                <state key="normal" backgroundImage="gearshape.fill" catalog="system"/>
+                                <connections>
+                                    <action selector="settingsMenuButtonTapped:" destination="BYZ-38-t0r" eventType="touchUpInside" id="hOJ-6K-GAB"/>
+                                </connections>
                             </button>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="bt3-ib-J1A"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
                             <constraint firstItem="Xg8-Td-eUW" firstAttribute="top" secondItem="fca-Fz-QiO" secondAttribute="top" constant="20" id="MwY-EU-hFm"/>
-                            <constraint firstItem="8f3-qh-3rn" firstAttribute="top" secondItem="fca-Fz-QiO" secondAttribute="top" constant="30" id="NeE-qu-ZQm"/>
                             <constraint firstAttribute="bottom" secondItem="ZDI-gf-P3t" secondAttribute="bottom" id="PHQ-0d-bG8"/>
-                            <constraint firstItem="8f3-qh-3rn" firstAttribute="leading" secondItem="fca-Fz-QiO" secondAttribute="leading" constant="25" id="XhZ-g1-U6s"/>
                             <constraint firstItem="ZDI-gf-P3t" firstAttribute="trailing" secondItem="bt3-ib-J1A" secondAttribute="trailing" id="eDH-ZM-RUn"/>
                             <constraint firstItem="ZDI-gf-P3t" firstAttribute="top" secondItem="fca-Fz-QiO" secondAttribute="top" id="eLN-YP-YxZ"/>
                             <constraint firstItem="bt3-ib-J1A" firstAttribute="trailing" secondItem="Xg8-Td-eUW" secondAttribute="trailing" constant="20" id="lQw-eH-rXZ"/>
                             <constraint firstItem="ZDI-gf-P3t" firstAttribute="leading" secondItem="bt3-ib-J1A" secondAttribute="leading" id="qxA-9z-EWy"/>
+                            <constraint firstItem="kVP-an-JBp" firstAttribute="leading" secondItem="bt3-ib-J1A" secondAttribute="leading" constant="20" id="sPg-HS-XrT"/>
+                            <constraint firstItem="kVP-an-JBp" firstAttribute="top" secondItem="fca-Fz-QiO" secondAttribute="top" constant="30" id="sjD-1N-CLu"/>
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" id="sHH-cE-b5g"/>
                     <nil key="simulatedTopBarMetrics"/>
                     <connections>
                         <outlet property="arView" destination="ZDI-gf-P3t" id="buI-Bt-rOe"/>
-                        <outlet property="trackingStateIndicator" destination="8f3-qh-3rn" id="ZJT-X1-ccv"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
@@ -94,14 +97,14 @@
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <progressView opaque="NO" contentMode="scaleToFill" verticalHuggingPriority="750" progress="0.5" translatesAutoresizingMaskIntoConstraints="NO" id="2wU-z2-7zV">
-                                                    <rect key="frame" x="132.66666666666666" y="15" width="149.99999999999997" height="5"/>
+                                                    <rect key="frame" x="132.5" y="15" width="150" height="5"/>
                                                     <constraints>
                                                         <constraint firstAttribute="width" constant="150" id="vwr-Xc-UL7"/>
                                                         <constraint firstAttribute="height" constant="5" id="yXj-Ae-oDE"/>
                                                     </constraints>
                                                 </progressView>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="100%" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="iWV-de-OJr">
-                                                    <rect key="frame" x="186" y="30" width="43.333333333333343" height="25"/>
+                                                    <rect key="frame" x="186" y="30" width="43" height="25"/>
                                                     <constraints>
                                                         <constraint firstAttribute="height" constant="25" id="doo-a1-afZ"/>
                                                     </constraints>
@@ -289,7 +292,7 @@
                                 </constraints>
                             </view>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="r2h-LL-bhg">
-                                <rect key="frame" x="182" y="832" width="50" height="48.666666666666629"/>
+                                <rect key="frame" x="182" y="831.5" width="50" height="49"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="50" id="4ti-r4-M0P"/>
                                     <constraint firstAttribute="height" constant="50" id="ipc-IB-1gI"/>
@@ -322,6 +325,7 @@
         </scene>
     </scenes>
     <resources>
+        <image name="gearshape.fill" catalog="system" width="128" height="121"/>
         <image name="plus.circle.fill" catalog="system" width="128" height="121"/>
         <namedColor name="AccentColor">
             <color red="0.0" green="0.46000000000000002" blue="0.89000000000000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>

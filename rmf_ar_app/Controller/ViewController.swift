@@ -8,38 +8,39 @@
 import UIKit
 import ARKit
 import RealityKit
+import SideMenu
 
 class ViewController: UIViewController {
-        
-    @IBOutlet var arView: ARView!
-    @IBOutlet weak var trackingStateIndicator: UIButton!
     
+    // MARK: - UI Elements
+    let coachingOverlay = ARCoachingOverlayView()
+    @IBOutlet var arView: ARView!
+    var taskViewController: TaskViewController!
+    var settingsViewController: SettingsViewController!
+    
+    // MARK: - Data Managers
     var networkManager: NetworkManager!
     var robotStateManager: RobotStateManager!
     var buildingMapManager: BuildingMapManager!
     var trajectoryManager: TrajectoryManager!
     var localizer: RobotTagLocalizer!
     
-    var taskViewController: TaskViewController!
-    
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         
-        
-        // Setup the tracking state indicator
-        trackingStateIndicator.layer.cornerRadius = 10
-        trackingStateIndicator.layer.cornerCurve = .continuous
-        trackingStateIndicator.layer.backgroundColor = UIColor.red.cgColor
+        setupCoachingOverlay()
         
         // Setup all the managers and controllers
         networkManager = NetworkManager()
         robotStateManager = RobotStateManager(arView: arView, networkManager: networkManager)
         buildingMapManager = BuildingMapManager(arView: arView, networkManager: networkManager)
-        trajectoryManager = TrajectoryManager(arView: arView, networkManager: networkManager)
-        localizer = RobotTagLocalizer(arView: arView)
+        trajectoryManager = TrajectoryManager(arView: arView, networkManager: networkManager, robotStateManager: robotStateManager)
+        localizer = RobotTagLocalizer(arView: arView, robotStateManager: robotStateManager)
         
         taskViewController = self.storyboard?.instantiateViewController(identifier: "Task View Controller")
         taskViewController.taskManager = TaskManager(networkManager: networkManager)
+        
+        settingsViewController = SettingsViewController()
         
         // Assign delegate
         arView.session.delegate = self
@@ -64,23 +65,32 @@ class ViewController: UIViewController {
         arView.session.run(configuration, options: [.resetTracking, .removeExistingAnchors])        
     }
     
+    // MARK: - Menu Buttons
     @IBAction func taskMenuButtonTapped(_ sender: Any) {
         taskViewController.modalPresentationStyle = .custom
         taskViewController.transitioningDelegate = self
         self.present(taskViewController, animated: true, completion: nil)
     }
+    
+    @IBAction func settingsMenuButtonTapped(_ sender: Any) {
+        let settingsMenu = SideMenuNavigationController(rootViewController: settingsViewController)
+        settingsMenu.leftSide = true
+        settingsMenu.presentationStyle = .menuSlideIn
+        
+        self.present(settingsMenu, animated: true, completion: nil)
+    }
 }
 
 extension ViewController: ARSessionDelegate {
     func session(_ session: ARSession, didAdd anchors: [ARAnchor]) {
-        
+
         for arAnchor in anchors {
-            
+
             // Pass the anchor to the robot state manager
             robotStateManager.handleARAnchor(anchor: arAnchor)
         }
     }
-    
+
     func session(_ session: ARSession, didUpdate anchors: [ARAnchor]) {
 
         for arAnchor in anchors {
@@ -91,16 +101,25 @@ extension ViewController: ARSessionDelegate {
     }
 }
 
-extension ViewController: ARSessionObserver {
-    func session(_ session: ARSession, cameraDidChangeTrackingState camera: ARCamera) {
-        switch camera.trackingState {
-        case .normal:
-            trackingStateIndicator.layer.backgroundColor = UIColor.green.cgColor
-        case .notAvailable:
-            trackingStateIndicator.layer.backgroundColor = UIColor.green.cgColor
-        default:
-            trackingStateIndicator.layer.backgroundColor = UIColor.yellow.cgColor
-        }
+extension ViewController: ARCoachingOverlayViewDelegate {
+    func setupCoachingOverlay() {
+        // Set up coaching view
+        coachingOverlay.session = arView.session
+        coachingOverlay.delegate = self
+        
+        coachingOverlay.translatesAutoresizingMaskIntoConstraints = false
+        arView.addSubview(coachingOverlay)
+        
+        NSLayoutConstraint.activate([
+            coachingOverlay.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            coachingOverlay.centerYAnchor.constraint(equalTo: view.centerYAnchor),
+            coachingOverlay.widthAnchor.constraint(equalTo: view.widthAnchor),
+            coachingOverlay.heightAnchor.constraint(equalTo: view.heightAnchor)
+            ])
+        
+        coachingOverlay.activatesAutomatically = true
+        
+        coachingOverlay.goal = .tracking
     }
 }
 
