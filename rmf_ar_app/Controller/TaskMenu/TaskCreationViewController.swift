@@ -44,6 +44,10 @@ class TaskCreationViewController: FormViewController {
                     
                     // All UI operations must be done on main thread
                     DispatchQueue.main.async {
+                        [weak self] in
+                        
+                        guard let self = self else { return }
+                        
                         self.form.removeAll()
                         self.displayDashboard(from: data)
                     }
@@ -327,6 +331,9 @@ class TaskCreationViewController: FormViewController {
             
             // UI handling must be done on main thread
             DispatchQueue.main.async {
+                [weak self] in
+                
+                guard let self = self else { return }
                 
                 // Dismiss waiting alert and show the outcome alert
                 self.dismiss(animated: true) {
