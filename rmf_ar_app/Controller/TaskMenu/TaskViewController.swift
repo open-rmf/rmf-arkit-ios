@@ -122,14 +122,14 @@ extension TaskViewController: UICollectionViewDataSource {
     
     // How many cells to return
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return taskManager.taskList.count
+        return taskManager.getNumberOfTasks()
     }
     
     // Cell view to show at each index
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: reuseIdentifier, for: indexPath) as! TaskCell
         
-        let currentTask = taskManager.taskList[indexPath.item]
+        let currentTask = taskManager.getTask(index: indexPath.item)
         
         cell.populateFromTask(task: currentTask)
         
@@ -146,9 +146,7 @@ extension TaskViewController: UICollectionViewDataSource {
         // refers to correct task inside taskList since latest data may have shifted the taskList ordering
         stopUpdateTimer()
         
-        // TODO: Use a semaphore on the taskList to ensure that theres no async issues that could occur
-        
-        let selectedTask = self.taskManager.taskList[indexToCancel]
+        let selectedTask = self.taskManager.getTask(index: indexToCancel)
         
         // Cannot cancel a task that has ended
         if selectedTask.done {

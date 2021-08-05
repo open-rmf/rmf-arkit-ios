@@ -13,9 +13,9 @@ import os
 class TaskCreationViewController: FormViewController {
     
     var taskManager: TaskManager!
-    var dashboardConfig: DashboardConfig!
+    private var dashboardConfig: DashboardConfig!
     
-    let logger = Logger(subsystem: Bundle.main.bundleIdentifier!, category: "TaskCreationViewController")
+    private let logger = Logger(subsystem: Bundle.main.bundleIdentifier!, category: "TaskCreationViewController")
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -35,8 +35,10 @@ class TaskCreationViewController: FormViewController {
         if dashboardConfig == nil {
             displayDefaultDashboard()
             
-            taskManager.networkManager.sendGetRequest(urlString: URLConstants.DASHBOARD, responseBodyType: DashboardConfig.self) {
-                responseResult in
+            taskManager.getTaskDashboard() {
+                [weak self] responseResult in
+                
+                guard let self = self else { return }
                 
                 switch responseResult {
                 case .success(let data):

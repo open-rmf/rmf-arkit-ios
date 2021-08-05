@@ -11,29 +11,55 @@ import os
 class TaskManager {
     
     // MARK: - Instance Variables
-    var networkManager: NetworkManager
-    var taskList: [TaskSummary] = []
+    private var networkManager: NetworkManager
+    private var taskList: [TaskSummary] = []
+    private let taskListSemaphore = DispatchSemaphore(value: 1)
     
-    let logger = Logger(subsystem: Bundle.main.bundleIdentifier!, category: "TaskManager")
+    private let logger = Logger(subsystem: Bundle.main.bundleIdentifier!, category: "TaskManager")
     
     // MARK: - Public Methods
     init(networkManager: NetworkManager) {
         self.networkManager = networkManager
     }
     
+    func getTask(index: Int) -> TaskSummary {
+        
+        taskListSemaphore.wait()
+        let copiedData = taskList[index]
+        taskListSemaphore.signal()
+        
+        return copiedData
+    }
+    
+    func getNumberOfTasks() -> Int {
+        taskListSemaphore.wait()
+        let copiedData = taskList.count
+        taskListSemaphore.signal()
+        
+        return copiedData
+    }
+    
     func downloadTaskList() {
         networkManager.sendGetRequest(urlString: URLConstants.TASK_LIST, responseBodyType: [TaskSummary].self) {
-            responseResult in
+            [weak self] responseResult in
+            
+            guard let self = self else { return }
             
             switch responseResult {
             case .success(let data):
+                self.taskListSemaphore.wait()
                 self.taskList = data
+                self.taskListSemaphore.signal()
             case .failure(let e):
                 self.logger.error("\(e.localizedDescription)")
                 return
             }
             
         }
+    }
+    
+    func getTaskDashboard(completionHandler: @escaping (Result<DashboardConfig, NetworkManagerError>) -> Void) {
+        networkManager.sendGetRequest(urlString: URLConstants.DASHBOARD, responseBodyType: DashboardConfig.self, completionHandler: completionHandler)
     }
     
     func createDeliveryTask(startTime: Int, priority: Int, pickupPlaceName: String, pickupDispenser: String, dropoffPlaceName: String, dropoffIngestor: String, completionHandler: @escaping (Bool, String, String) -> Void) {
