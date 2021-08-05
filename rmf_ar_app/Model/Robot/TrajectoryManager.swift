@@ -12,20 +12,20 @@ import RealityKit
 
 class TrajectoryManager {
     
-    var networkManager: NetworkManager
-    var webSocketConnection: URLSessionWebSocketTask?
+    private var networkManager: NetworkManager
+    private var webSocketConnection: URLSessionWebSocketTask?
     
-    var robotStateManager: RobotStateManager
+    private var robotStateManager: RobotStateManager
     
-    var arView: ARView
-    var trajectoryAnchor: AnchorEntity
+    private var arView: ARView
+    private var trajectoryAnchor: AnchorEntity
     
-    var downloadTimer: Timer!
+    private var downloadTimer: Timer!
     
-    var levelName: String?
-    var heightLevelMap: [Int:[RobotTrajectory]] = [:]
+    private var levelName: String?
+    private var heightLevelMap: [Int:[RobotTrajectory]] = [:]
     
-    let logger = Logger(subsystem: Bundle.main.bundleIdentifier!, category: "TrajectoryManager")
+    private let logger = Logger(subsystem: Bundle.main.bundleIdentifier!, category: "TrajectoryManager")
     
     init(arView: ARView, networkManager: NetworkManager, robotStateManager: RobotStateManager) {
         self.networkManager = networkManager
@@ -52,7 +52,7 @@ class TrajectoryManager {
         NotificationCenter.default.addObserver(self, selector: #selector(setLevelName), name: Notification.Name("setWorldOrigin"), object: nil)
     }
     
-    @objc func setLevelName(_ notification: Notification) -> Void {
+    @objc private func setLevelName(_ notification: Notification) -> Void {
         guard let localizationData = notification.userInfo as? [String: String] else {
             logger.error("Notification's data did not match expected value")
             return
@@ -66,7 +66,7 @@ class TrajectoryManager {
         self.levelName = levelName
     }
     
-    @objc func updateTrajectories() {
+    @objc private func updateTrajectories() {
         guard let connection = webSocketConnection else {
             logger.error("Web Socket connection was not opened")
             return
@@ -78,6 +78,7 @@ class TrajectoryManager {
             return
         }
         
+        // Get trajectory data from the trajectory server
         let trajectoryRequest = TrajectoryRequest(mapName: levelName, duration: 60000, trim: true)
         
         networkManager.sendWebSocketRequest(webSocketConnection: connection, requestBody: trajectoryRequest, responseBodyType: TrajectoryResponse.self) {
@@ -105,12 +106,12 @@ class TrajectoryManager {
         }
     }
     
-    func visualizeTrajectories(trajectoryResponse trajectories: TrajectoryResponse) {
+    private func visualizeTrajectories(trajectoryResponse trajectories: TrajectoryResponse) {
         self.clearPreviousTrajectories()
         
         let robotData = robotStateManager.getRobotsData()
         
-        // Sort trajectories by id
+        // Sort trajectories by id so that when we check height level the ordering is consistent
         let trajectoryList = trajectories.values.sorted {
             return $0.id < $1.id
         }
@@ -138,12 +139,12 @@ class TrajectoryManager {
         }
     }
     
-    func getHeightLevel(trajectory: RobotTrajectory) -> Int {
+    private func getHeightLevel(trajectory: RobotTrajectory) -> Int {
         // Height level is determined by how many other trajectories the current trajectory intersects
         return recursiveIntersectingCheck(trajectory: trajectory, currentHeightLevel: 0)
     }
     
-    func recursiveIntersectingCheck(trajectory: RobotTrajectory, currentHeightLevel: Int) -> Int {
+    private func recursiveIntersectingCheck(trajectory: RobotTrajectory, currentHeightLevel: Int) -> Int {
         
         // If the list of trajectories at currentHeightLevel is empty simply add the trajectory in and return the height
         guard let currentHeightTrajectories = heightLevelMap[currentHeightLevel] else {
@@ -162,8 +163,8 @@ class TrajectoryManager {
         return currentHeightLevel
     }
     
-    func isIntersecting(trajectory1: RobotTrajectory, trajectory2: RobotTrajectory) -> Bool {
-        
+    private func isIntersecting(trajectory1: RobotTrajectory, trajectory2: RobotTrajectory) -> Bool {
+        // Brute force search - could be sped up but number of trajectories/knots is small enough that this is fine
         for i in 0..<trajectory1.segments.count - 1 {
             let curKnotTraj1 = trajectory1.segments[i]
             let nextKnotTraj1 = trajectory1.segments[i + 1]
@@ -187,7 +188,7 @@ class TrajectoryManager {
         return false
     }
     
-    func intersects(p1: CGPoint, q1: CGPoint, p2: CGPoint, q2: CGPoint) -> Bool {
+    private func intersects(p1: CGPoint, q1: CGPoint, p2: CGPoint, q2: CGPoint) -> Bool {
         
         // Check the orientation between each line and the start/end point of the other line
         // e.g. line p1q1 and start point p2
@@ -227,7 +228,7 @@ class TrajectoryManager {
         
     }
     
-    func getOrientation(p: CGPoint, q: CGPoint, r: CGPoint) -> Float{
+    private func getOrientation(p: CGPoint, q: CGPoint, r: CGPoint) -> Float{
         let det = (q.y - p.y) * (r.x - q.x) - (q.x - p.x) * (r.y - q.y)
         
         if det > 0 {
@@ -244,7 +245,7 @@ class TrajectoryManager {
         }
     }
     
-    func onSegment(p: CGPoint, q: CGPoint, r: CGPoint) -> Bool {
+    private func onSegment(p: CGPoint, q: CGPoint, r: CGPoint) -> Bool {
         if q.x <= max(p.x, r.x) && q.x >= min(p.x, r.x) && q.y <= max(p.y, r.y) && q.y >= min(p.y, r.y) {
             return true
         }
@@ -252,7 +253,7 @@ class TrajectoryManager {
         return false
     }
     
-    func isConflicting(trajectory: RobotTrajectory, conflicts: [[Int]]) -> Bool {
+    private func isConflicting(trajectory: RobotTrajectory, conflicts: [[Int]]) -> Bool {
         for pair in conflicts {
             
             if pair.contains(trajectory.id) {
@@ -263,7 +264,7 @@ class TrajectoryManager {
         return false
     }
     
-    func clearPreviousTrajectories() {
+    private func clearPreviousTrajectories() {
         self.heightLevelMap = [:]
         trajectoryAnchor.children.removeAll()
     }
