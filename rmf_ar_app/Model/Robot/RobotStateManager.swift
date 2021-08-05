@@ -12,21 +12,24 @@ import ARKit
 
 class RobotStateManager {
     
-    var arView: ARView
+    private var arView: ARView
     
-    var robots: [String: TrackedRobot] = [:]
-    var robotsSemaphore = DispatchSemaphore(value: 1)
+    private var robots: [String: TrackedRobot] = [:]
+    private var robotsSemaphore = DispatchSemaphore(value: 1)
     
-    var robotUIAsset: Entity
+    private var robotUIAsset: Entity
     
-    var networkManager: NetworkManager
+    private var networkManager: NetworkManager
     
-    var downloadTimer: Timer!
+    private var downloadTimer: Timer!
     
-    let logger = Logger(subsystem: Bundle.main.bundleIdentifier!, category: "RobotStateManager")
+    private let logger = Logger(subsystem: Bundle.main.bundleIdentifier!, category: "RobotStateManager")
     
-    var isLocalized = false
-    var uiLastUpdate = Date.distantPast
+    private var isLocalized = false
+    private var uiLastUpdate = Date.distantPast
+    
+    private static let robotMesh = MeshResource.generateBox(width: 0.2, height: 0.2, depth: 0.5, cornerRadius: 0.2, splitFaces: true)
+    private static let robotMaterial = SimpleMaterial(color: .purple, isMetallic: false)
     
     init(arView: ARView, networkManager: NetworkManager) {
         self.arView = arView
@@ -40,7 +43,7 @@ class RobotStateManager {
             self.robotUIAsset = Entity()
         }
         
-        DispatchQueue.global().async {
+        DispatchQueue.global(qos: .userInitiated).async {
             [weak self] in
             
             guard let self = self else { return }
@@ -53,6 +56,16 @@ class RobotStateManager {
         }
         
         NotificationCenter.default.addObserver(self, selector: #selector(setIsLocalized), name: Notification.Name("setWorldOrigin"), object: nil)
+    }
+    
+    // MARK: - Public Methods
+    func getRobotsData() -> [String: TrackedRobot] {
+        // Lock before copying
+        robotsSemaphore.wait()
+        let copiedData = self.robots
+        robotsSemaphore.signal()
+        
+        return copiedData
     }
     
     func handleARAnchor(anchor: ARAnchor) {
@@ -78,8 +91,6 @@ class RobotStateManager {
             
             let sceneAnchor = AnchorEntity.init(anchor: imageAnchor)
             sceneAnchor.name = tagName + "UI"
-            
-            // TODO: Add an occlusion material so we dont see the panel from behind
 
             sceneAnchor.addChild(uiEntity)
             self.arView.scene.addAnchor(sceneAnchor)
@@ -96,7 +107,8 @@ class RobotStateManager {
         robotsSemaphore.signal()
     }
     
-    @objc func updateRobotStates() {
+    //MARK: - Private Methods
+    @objc private func updateRobotStates() {
         self.networkManager.sendGetRequest(urlString: URLConstants.ROBOT_STATES, responseBodyType: [RobotState].self) {
             responseResult in
             
@@ -124,25 +136,27 @@ class RobotStateManager {
             self.robotsSemaphore.signal()
                 
             DispatchQueue.main.async {
-                self.robotsSemaphore.wait()
+                [weak self] in
+                
+                guard let self = self else { return }
+                
+                let robotsData = self.getRobotsData()
+                
                 if self.isLocalized {
-                    self.updateRobotMarkers()
+                    self.visualizeMarkers(robotsData: robotsData)
                 }
                 
-                self.updateTextInRobotUI()
-                self.robotsSemaphore.signal()
+                self.visualizeRobotUI(robotsData: robotsData)
+                
             }
-            
-            // Publish robot data
-            NotificationCenter.default.post(name: Notification.Name("robotStatesUpdated"), object: nil, userInfo: self.robots)
         }
     }
     
-    @objc func setIsLocalized(_ notification: Notification) {
+    @objc private func setIsLocalized(_ notification: Notification) {
         isLocalized = true
     }
     
-    func updateRobotMarkers() {
+    private func visualizeMarkers(robotsData: [String: TrackedRobot]) {
         
         var markersAnchor: AnchorEntity? = arView.scene.findEntity(named: "RobotMarkers") as? AnchorEntity
         
@@ -153,13 +167,11 @@ class RobotStateManager {
             arView.scene.addAnchor(markersAnchor!)
         }
         
-        for (name, trackingData) in self.robots {
+        for (name, trackingData) in robotsData {
             var robotMarker = arView.scene.findEntity(named: name + "Marker")
             
             if robotMarker == nil {
-                let robotMesh = MeshResource.generateSphere(radius: 0.2)
-                let robotMaterial = SimpleMaterial(color: .purple, isMetallic: false)
-                robotMarker = ModelEntity(mesh: robotMesh, materials: [robotMaterial])
+                robotMarker = ModelEntity(mesh: RobotStateManager.robotMesh, materials: Array(repeating: RobotStateManager.robotMaterial, count: RobotStateManager.robotMesh.expectedMaterialCount))
                 robotMarker!.name = name + "Marker"
                 markersAnchor?.addChild(robotMarker!)
             }
@@ -167,19 +179,14 @@ class RobotStateManager {
             let x = Float(trackingData.robotState.locationX)
             let y = Float(trackingData.robotState.locationY)
             
-            // Only show the marker if it has not been seen recently (5 seconds)
-            if Date().timeIntervalSince(trackingData.lastSeen) > 5 {
-                robotMarker?.isEnabled = true
-            } else {
-                robotMarker?.isEnabled = false
-            }
-            
+            // Only show the marker if it has not been seen recently
+            robotMarker?.isEnabled = Date().timeIntervalSince(trackingData.lastSeen) > ARConstants.RobotStates.TRACKING_TIMEOUT
 
             robotMarker!.setPosition([x, y, ARConstants.RobotStates.Z_OFFSET], relativeTo: nil)
         }
     }
     
-    func updateTextInRobotUI() {
+    private func visualizeRobotUI(robotsData: [String: TrackedRobot]) {
         let currentTime = Date()
         
         // Updating the UI is very expensive. Throttle to update only every second to ensure FPS remains high
@@ -190,7 +197,7 @@ class RobotStateManager {
         }
         
         // Update all UIs linked to robot states
-        for (name, trackingData) in self.robots {
+        for (name, trackingData) in robotsData {
             
             // Skip when not seen
             if !trackingData.isTracked {
@@ -206,19 +213,32 @@ class RobotStateManager {
             let mirror = Mirror(reflecting: trackingData.robotState)
             
             for field in mirror.children {
-                var fontSize = CGFloat(0.1)
+                var fontSize = 0.08
+                var value = field.value
                 
-                if field.label! == "fleetName" {
-                    fontSize = CGFloat(0.08)
+                
+                if field.label == "robotName" {
+                    fontSize = 0.1
+                }
+                
+                // Round doubles to 2 decimal places
+                if value is Double {
+                    value = round(value as! Double * 100.0) / 100
                 }
                 
                 guard let namedEntity = uiEntity.findEntity(named: field.label!) else {continue}
                 guard let textModelEntity = namedEntity.findEntity(named: "Text")?.children.first as? ModelEntity else {
                     continue}
                 
-                textModelEntity.model?.mesh = .generateText("\(field.value)", extrusionDepth: 0.01, font: .init(name: "Helvetica", size: fontSize)!)
+                textModelEntity.model?.mesh = .generateText("\(field.value)", extrusionDepth: 0.01, font: .init(name: "Helvetica", size: CGFloat(fontSize))!)
+                
+                // Centre the robot name
+                if field.label == "robotName" {
+                    let bounds = robotUIAsset.visualBounds(relativeTo: nil)
+                    let width = bounds.max.x - bounds.min.x
+                    textModelEntity.position.x = -(width + (textModelEntity.model!.mesh.bounds.max.x - textModelEntity.model!.mesh.bounds.min.x)/2)
+                }
             }
-            
         }
     }
     

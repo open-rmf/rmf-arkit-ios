@@ -19,6 +19,7 @@ struct ARConstants {
     struct RobotStates {
         static let DOWNLOAD_RATE: Double = 10
         static let Z_OFFSET: Float = 0.3
+        static let TRACKING_TIMEOUT: Double = 5
     }
     
     struct Trajectory {

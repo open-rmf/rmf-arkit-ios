@@ -1,0 +1,16 @@
+{
+  "images" : [
+    {
+      "filename" : "ROS2_Foxy_Fitzroy_poster.png",
+      "idiom" : "universal"
+    }
+  ],
+  "info" : {
+    "author" : "xcode",
+    "version" : 1
+  },
+  "properties" : {
+    "unit" : "centimeters",
+    "width" : 20.199999999999999
+  }
+}

@@ -13,39 +13,36 @@ import RealityKit
 
 class RobotTagLocalizer {
     
-    var arView: ARView
+    private var arView: ARView
+    private var robotStateManager: RobotStateManager
     
-    private var lastUpdateTime: Date
+    private var updateTimer: Timer!
     
     private var isLocalized = false
     private var unalignedCounter = 0
     
     let logger = Logger(subsystem: Bundle.main.bundleIdentifier!, category: "TrajectoryManager")
     
-    init(arView: ARView) {
+    init(arView: ARView, robotStateManager: RobotStateManager) {
         self.arView = arView
+        self.robotStateManager = robotStateManager
         
-        lastUpdateTime = Date.distantPast
-        
-        NotificationCenter.default.addObserver(self, selector: #selector(run), name: Notification.Name("robotStatesUpdated"), object: nil)
+        DispatchQueue.global(qos: .userInitiated).async {
+            [weak self] in
+            
+            guard let self = self else { return }
+            
+            self.updateTimer = Timer(timeInterval: (1 / ARConstants.Localization.UPDATE_RATE), target: self, selector: #selector(self.run), userInfo: nil, repeats: true)
+            
+            let runLoop = RunLoop.current
+            runLoop.add(self.updateTimer, forMode: .default)
+            runLoop.run()
+        }
     }
     
-    @objc func run(_ notification: Notification) {
-        
-        // Check to make sure we only localize at UPDATE_RATE or slower
-        let currentTime = Date()
-        
-        if currentTime.timeIntervalSince(lastUpdateTime) < (1 / ARConstants.Localization.UPDATE_RATE) {
-            logger.debug("Skipping received robot states. Received message too soon after previous")
-            return
-        } else {
-            lastUpdateTime = currentTime
-        }
-        
-        guard let robotsDict = notification.userInfo as? [String: TrackedRobot] else {
-            logger.error("Notification \(notification.name.rawValue)'s user info did not match expected value")
-            return
-        }
+    @objc func run() {
+            
+        let robotsDict = robotStateManager.getRobotsData()
         
         // Only localize if tracking state is good
         switch arView.session.currentFrame?.camera.trackingState {
@@ -208,4 +205,7 @@ class RobotTagLocalizer {
         return transformMatrix
     }
 
+    deinit {
+        self.updateTimer.invalidate()
+    }
 }
