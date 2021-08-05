@@ -168,6 +168,9 @@ extension TaskViewController: UICollectionViewDataSource {
                 
                 // UI handling must be done on main thread
                 DispatchQueue.main.async {
+                    [weak self] in
+                    
+                    guard let self = self else { return }
                     
                     // Dismiss cancel waiting alert and show the outcome alert
                     self.dismiss(animated: true) {
