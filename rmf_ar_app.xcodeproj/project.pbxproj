@@ -21,7 +21,10 @@
 		307ECE17269DAA88001DC4AD /* TrajectoryManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 307ECE16269DAA88001DC4AD /* TrajectoryManager.swift */; };
 		307FE3DB26AFA5760083180A /* URLConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 307FE3DA26AFA5760083180A /* URLConstants.swift */; };
 		307FE3DD26AFAC850083180A /* NetworkManagerError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 307FE3DC26AFAC850083180A /* NetworkManagerError.swift */; };
-		308BEB4026858A7500757DC1 /* robotUI.usdz in Resources */ = {isa = PBXBuildFile; fileRef = 308BEB3F26858A7500757DC1 /* robotUI.usdz */; };
+		30827A3C26BA6EB00061ABF8 /* robotUI.usdz in Resources */ = {isa = PBXBuildFile; fileRef = 30827A3B26BA6EB00061ABF8 /* robotUI.usdz */; };
+		3085A04526B9165600870FC5 /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3085A04426B9165600870FC5 /* SettingsViewController.swift */; };
+		3085A04826B91B4700870FC5 /* SideMenu in Frameworks */ = {isa = PBXBuildFile; productRef = 3085A04726B91B4700870FC5 /* SideMenu */; };
+		308947C526B92850006A8CCB /* Settings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 308947C426B92850006A8CCB /* Settings.swift */; };
 		308BEB822685D71C00757DC1 /* WallEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 308BEB812685D71C00757DC1 /* WallEntity.swift */; };
 		308C0DF3267B217D0077C844 /* RobotState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 308C0DF2267B217D0077C844 /* RobotState.swift */; };
 		3094768A2680310D00164DA6 /* BuildingMapManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 309476892680310D00164DA6 /* BuildingMapManager.swift */; };
@@ -70,7 +73,9 @@
 		307ECE16269DAA88001DC4AD /* TrajectoryManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrajectoryManager.swift; sourceTree = "<group>"; };
 		307FE3DA26AFA5760083180A /* URLConstants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = URLConstants.swift; sourceTree = "<group>"; };
 		307FE3DC26AFAC850083180A /* NetworkManagerError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkManagerError.swift; sourceTree = "<group>"; };
-		308BEB3F26858A7500757DC1 /* robotUI.usdz */ = {isa = PBXFileReference; lastKnownFileType = file.usdz; path = robotUI.usdz; sourceTree = "<group>"; };
+		30827A3B26BA6EB00061ABF8 /* robotUI.usdz */ = {isa = PBXFileReference; lastKnownFileType = file.usdz; path = robotUI.usdz; sourceTree = "<group>"; };
+		3085A04426B9165600870FC5 /* SettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
+		308947C426B92850006A8CCB /* Settings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Settings.swift; sourceTree = "<group>"; };
 		308BEB812685D71C00757DC1 /* WallEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WallEntity.swift; sourceTree = "<group>"; };
 		308C0DF2267B217D0077C844 /* RobotState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RobotState.swift; sourceTree = "<group>"; };
 		309476892680310D00164DA6 /* BuildingMapManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BuildingMapManager.swift; sourceTree = "<group>"; };
@@ -97,6 +102,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3085A04826B91B4700870FC5 /* SideMenu in Frameworks */,
 				307C32DD2696D6EB0007EF4C /* Eureka in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -132,6 +138,7 @@
 		3011B52D267C380400D17FD9 /* Model */ = {
 			isa = PBXGroup;
 			children = (
+				308947C326B92845006A8CCB /* Settings */,
 				309873CF269D401200E5DDA2 /* Task */,
 				309873CE269D3FD300E5DDA2 /* BuildingMap */,
 				309873CC269D3FC300E5DDA2 /* Localization */,
@@ -146,6 +153,7 @@
 			children = (
 				309873D0269D403500E5DDA2 /* TaskMenu */,
 				30AA7597267A1B3700D56B99 /* ViewController.swift */,
+				3085A04426B9165600870FC5 /* SettingsViewController.swift */,
 			);
 			path = Controller;
 			sourceTree = "<group>";
@@ -158,6 +166,14 @@
 				306C448C2694478700386D11 /* TaskCell.swift */,
 			);
 			path = View;
+			sourceTree = "<group>";
+		};
+		308947C326B92845006A8CCB /* Settings */ = {
+			isa = PBXGroup;
+			children = (
+				308947C426B92850006A8CCB /* Settings.swift */,
+			);
+			path = Settings;
 			sourceTree = "<group>";
 		};
 		309873CA269D3FAB00E5DDA2 /* Network */ = {
@@ -252,7 +268,7 @@
 		30B231F9267B7CA500265D9A /* Resources */ = {
 			isa = PBXGroup;
 			children = (
-				308BEB3F26858A7500757DC1 /* robotUI.usdz */,
+				30827A3B26BA6EB00061ABF8 /* robotUI.usdz */,
 				30B231F7267B5B6B00265D9A /* ARAssets.rcproject */,
 				30AA759E267A1B3700D56B99 /* Assets.xcassets */,
 				307FE3DA26AFA5760083180A /* URLConstants.swift */,
@@ -279,6 +295,7 @@
 			name = rmf_ar_app;
 			packageProductDependencies = (
 				307C32DC2696D6EB0007EF4C /* Eureka */,
+				3085A04726B91B4700870FC5 /* SideMenu */,
 			);
 			productName = rmf_ar_app;
 			productReference = 30AA7592267A1B3700D56B99 /* rmf_ar_app.app */;
@@ -353,6 +370,7 @@
 			mainGroup = 30AA7589267A1B3700D56B99;
 			packageReferences = (
 				307C32DB2696D6EB0007EF4C /* XCRemoteSwiftPackageReference "Eureka" */,
+				3085A04626B91B4700870FC5 /* XCRemoteSwiftPackageReference "SideMenu" */,
 			);
 			productRefGroup = 30AA7593267A1B3700D56B99 /* Products */;
 			projectDirPath = "";
@@ -370,7 +388,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				308BEB4026858A7500757DC1 /* robotUI.usdz in Resources */,
+				30827A3C26BA6EB00061ABF8 /* robotUI.usdz in Resources */,
 				30AA75A2267A1B3700D56B99 /* LaunchScreen.storyboard in Resources */,
 				30AA759F267A1B3700D56B99 /* Assets.xcassets in Resources */,
 				30AA759D267A1B3700D56B99 /* Main.storyboard in Resources */,
@@ -415,12 +433,14 @@
 				30C3E04826802CC2009ABCFD /* RobotStateManager.swift in Sources */,
 				306C448F2694489300386D11 /* TaskManager.swift in Sources */,
 				30ECD020269407B100E12C55 /* PresentationController.swift in Sources */,
+				308947C526B92850006A8CCB /* Settings.swift in Sources */,
 				30B231F8267B5B6B00265D9A /* ARAssets.rcproject in Sources */,
 				307ECE15269D5DE1001DC4AD /* Trajectory.swift in Sources */,
 				307FE3DB26AFA5760083180A /* URLConstants.swift in Sources */,
 				3009E4442683082600A3D262 /* EdgeEntity.swift in Sources */,
 				307C32DF2696D7220007EF4C /* TaskCreationViewController.swift in Sources */,
 				3009E449268322C400A3D262 /* VertexEntity.swift in Sources */,
+				3085A04526B9165600870FC5 /* SettingsViewController.swift in Sources */,
 				306C449226944E4400386D11 /* Task.swift in Sources */,
 				30AA7596267A1B3700D56B99 /* AppDelegate.swift in Sources */,
 			);
@@ -765,6 +785,14 @@
 				minimumVersion = 5.3.3;
 			};
 		};
+		3085A04626B91B4700870FC5 /* XCRemoteSwiftPackageReference "SideMenu" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/jonkykong/SideMenu.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 6.5.0;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -772,6 +800,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 307C32DB2696D6EB0007EF4C /* XCRemoteSwiftPackageReference "Eureka" */;
 			productName = Eureka;
+		};
+		3085A04726B91B4700870FC5 /* SideMenu */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 3085A04626B91B4700870FC5 /* XCRemoteSwiftPackageReference "SideMenu" */;
+			productName = SideMenu;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
