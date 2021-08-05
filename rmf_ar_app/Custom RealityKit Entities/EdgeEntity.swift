@@ -11,7 +11,7 @@ import ARKit
 
 class EdgeEntity: Entity, HasModel {
     
-    static let EDGE_MATERIAL = UnlitMaterial(color: .cyan.withAlphaComponent(0.6))
+    static let EDGE_MATERIAL = UnlitMaterial(color: .orange.withAlphaComponent(0.6))
     
     // Default constructor is required
     required init() {
