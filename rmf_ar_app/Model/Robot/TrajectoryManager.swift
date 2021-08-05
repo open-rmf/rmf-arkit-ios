@@ -15,6 +15,8 @@ class TrajectoryManager {
     var networkManager: NetworkManager
     var webSocketConnection: URLSessionWebSocketTask?
     
+    var robotStateManager: RobotStateManager
+    
     var arView: ARView
     var trajectoryAnchor: AnchorEntity
     
@@ -25,8 +27,9 @@ class TrajectoryManager {
     
     let logger = Logger(subsystem: Bundle.main.bundleIdentifier!, category: "TrajectoryManager")
     
-    init(arView: ARView, networkManager: NetworkManager) {
+    init(arView: ARView, networkManager: NetworkManager, robotStateManager: RobotStateManager) {
         self.networkManager = networkManager
+        self.robotStateManager = robotStateManager
         
         webSocketConnection = self.networkManager.openWebSocketConnection(urlString: URLConstants.TRAJ_SERVER)
         
@@ -34,7 +37,7 @@ class TrajectoryManager {
         trajectoryAnchor = AnchorEntity(world: [0,0,0])
         arView.scene.addAnchor(trajectoryAnchor)
         
-        DispatchQueue.global().async {
+        DispatchQueue.global(qos: .userInitiated).async {
             [weak self] in
             
             guard let self = self else { return }
@@ -93,6 +96,10 @@ class TrajectoryManager {
             
             // Any drawing must be done on main thread
             DispatchQueue.main.async {
+                [weak self] in
+                
+                guard let self = self else { return }
+                
                 self.visualizeTrajectories(trajectoryResponse: trajectoryResponse)
             }
         }
@@ -101,6 +108,8 @@ class TrajectoryManager {
     func visualizeTrajectories(trajectoryResponse trajectories: TrajectoryResponse) {
         self.clearPreviousTrajectories()
         
+        let robotData = robotStateManager.getRobotsData()
+        
         // Sort trajectories by id
         let trajectoryList = trajectories.values.sorted {
             return $0.id < $1.id
@@ -108,12 +117,15 @@ class TrajectoryManager {
         
         for trajectory in trajectoryList {
 
-            // Only two knots means no trajectory
-            if trajectory.segments.count <= 2 {
+            // If 1 or fewer knots then we cant visualize the trajectory
+            if trajectory.segments.count <= 1 {
                 continue
             }
             
             let isCollision = isConflicting(trajectory: trajectory, conflicts: trajectories.conflicts)
+            
+            // Highlight robots if they are considered tracked
+            let isHighlighted = Date().timeIntervalSince(robotData[trajectory.robotName]?.lastSeen ?? Date.distantPast) < ARConstants.RobotStates.TRACKING_TIMEOUT ? true : false
             
             // Checks if the trajectory overlaps with other seen trajectories and returns the level at which it should
             // be displayed to prevent overlapping (overlapping trajectories make it difficult to tell which robot
@@ -121,7 +133,7 @@ class TrajectoryManager {
             let heightLevel = getHeightLevel(trajectory: trajectory)
             
             // Add Trajectory
-            let trajEntity = TrajectoryEntity(trajectory: trajectory, isCollision: isCollision, heightLevel: heightLevel)
+            let trajEntity = TrajectoryEntity(trajectory: trajectory, isCollision: isCollision, isHighlighted: isHighlighted, heightLevel: heightLevel)
             trajectoryAnchor.addChild(trajEntity)
         }
     }
