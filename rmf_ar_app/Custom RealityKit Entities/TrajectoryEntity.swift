@@ -20,7 +20,7 @@ class TrajectoryEntity: Entity {
     var segments: [ModelEntity] = []
     private var isCollision = false
     private var isHighlighted = false
-    private var heightLevel = 1
+    private var heightLevel = 0
     
     required init() {
         super.init()
@@ -31,6 +31,7 @@ class TrajectoryEntity: Entity {
         
         self.isCollision = isCollision
         self.isHighlighted = isHighlighted
+        self.heightLevel = heightLevel
         
         self.name = "trajectory\(trajectory.id)"
         
