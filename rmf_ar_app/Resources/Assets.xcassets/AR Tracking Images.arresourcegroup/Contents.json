@@ -1,0 +1,14 @@
+{
+  "info" : {
+    "author" : "xcode",
+    "version" : 1
+  },
+  "resources" : [
+    {
+      "filename" : "tb2new.arreferenceimage"
+    },
+    {
+      "filename" : "tinyRobot1.arreferenceimage"
+    }
+  ]
+}

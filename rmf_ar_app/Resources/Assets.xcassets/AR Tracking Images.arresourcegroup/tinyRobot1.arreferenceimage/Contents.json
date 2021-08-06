@@ -1,0 +1,16 @@
+{
+  "images" : [
+    {
+      "filename" : "IMG_2781.png",
+      "idiom" : "universal"
+    }
+  ],
+  "info" : {
+    "author" : "xcode",
+    "version" : 1
+  },
+  "properties" : {
+    "unit" : "centimeters",
+    "width" : 17
+  }
+}
