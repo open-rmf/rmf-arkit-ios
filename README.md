@@ -13,6 +13,11 @@
 </br>
 
 ## About
+Click the images below to watch the demo videos.
+  
+<a href="https://drive.google.com/file/d/17smM7swvcon8t0gA0U1UY9DY3zBwEKMw/view?usp=sharing"><img src="docs/FullDemoThumbnail.png" width=300/></a> &nbsp; <a href="https://drive.google.com/file/d/1IudEASccV7vKERp83MiUEHYfEXDwtzVU/view?usp=sharing"><img src="docs/TrajectoriesThumbnail.png" width=300/></a>
+  
+  
 This iOS app utilizes Augmented Reality (AR) to enhance monitoring and introspection of the [Robotics Middleware Framework](https://github.com/open-rmf/rmf). Currently the app will display the following information:
 - Robot Data
     - Name
@@ -43,7 +48,7 @@ The first time you run the app you will receive an error as it will not be verif
 ### Connecting to RMF
 Ensure that the RMF API Server is running and change the IP addresses in [URLConstants.swift](rmf_ar_app/Resources/URLConstants.swift) to match with the correct end points.
 
-### Adding a new Robot tag
+### Adding a new tag
 Within XCode navigate to the [Assets.xcassets](rmf_ar_app/Resources/Assets.xcassets) folder. Drag and drop the new image you wish to use as a tag. Within the attributes inspector panel on the right ensure that you label the image with the same name as the robot it will be tagged to. You will also need to set the size of the image in the real world. ARKit relies on these measurements to detect and track the image so ensure your values are as accurate as possible.
 </br>
 
