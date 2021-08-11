@@ -62,11 +62,17 @@ Any robot whose tag is not tracked will be displayed with a marker. A tracked ta
 ##### Task List
 To open the tasks list press the button labelled "tasks" in the top right hand corner of the screen. This will bring up a list of current tasks. 
 
+![ ](docs/TaskList.gif)
+
 ##### Add Task
 To add a task simply press the "+" button and a form containing the valid tasks and options will appear. Once the form is correctly filled you can press the submit button to send the task to RMF. A popup box will inform you if the task was succesfully scheduled or not.
 
+![ ](docs/TaskCreate.gif)
+
 ##### Cancel Task
 To cancel a task, press on the task you wish to cancel. If the task is cancellable then a menu with the option to cancel will appear. Only tasks that are queued may be cancelled.
+
+![ ](docs/TaskCancel.gif)
 
 ## Advanced
 <details>
